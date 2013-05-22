@@ -103,10 +103,10 @@ class RPMRepManager:
 				for i in rpm_hash[k][1:]:
 					r = o_rpm.is_latest(i)
 					if r == 0:
-						print("\t" + c.RED + " + will delete " + o_rpm.get("bname") + c.NC)
+						print("\t" + c.RED + " + will delete " + o_rpm.get("bname")  + " signed: " + str(o_rpm.is_signed()) + c.NC)
 						o_rpm = i
 					elif r == 1:
-						print("\t" + c.RED + " + will delete " + i.get("bname") + c.NC)
+						print("\t" + c.RED + " + will delete " + i.get("bname") + " signed: " + str(i.is_signed()) + c.NC)
 					else:
 						print("\t" + c.BLUE + " + what to do with " + i.get("bname") + " ?" + c.NC)
 				print("\t" + c.GREEN + " + take " + o_rpm.get("bname") + " signed: " + str(o_rpm.is_signed()) + c.NC)

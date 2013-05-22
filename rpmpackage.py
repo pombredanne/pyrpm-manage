@@ -45,6 +45,23 @@ class RPMPackage:
 			return True
 		return False
 
+	def __complex_version(self, my_version, his_version):
+		my_s_version	= my_version.split('.')
+		his_s_version	= his_version.split('.')
+
+		m_range = len(my_s_version)
+		if len(his_s_version) < m_range:
+			m_range = len(his_s_version)
+
+		for i in range(m_range):
+			m_v = int(my_s_version[i])
+			h_v = int(his_s_version[i])
+			if m_v < h_v:
+				return 0
+			elif m_v > h_v:
+				return 1
+		return None
+
 	"""
 	@return:
 		-2 : impossible to determine
@@ -62,6 +79,7 @@ class RPMPackage:
 		his_epoch		= o_rpmpackage.get("epoch")
 		his_arch		= o_rpmpackage.get("arch")
 
+		# VERSION
 		try:
 			m_v = float(my_version)
 			h_v = float(his_version)
@@ -70,8 +88,15 @@ class RPMPackage:
 			elif m_v < h_v:
 				return 0
 		except:
-			m_v = 0
-			h_v = 0
+			None
+		# COMPLEX VERSION
+		try:
+			r = self.__complex_version(my_version, his_version)
+			if r in [0, 1]:
+				return r
+		except:
+			None
+		# RELEASE
 		try:
 			m_tr = float(my_truerelease)
 			h_tr = float(his_truerelease)
@@ -82,19 +107,23 @@ class RPMPackage:
 		except:
 			m_tr = 0
 			h_tr = 0
+
+		# EPOCH
 		try:
 			m_e = float(my_epoch)
 			h_e = float(his_epoch)
-			if m_e > h_e and m_tr == h_tr:
-				return 1
-			elif m_e < h_e and m_tr == h_tr:
-				return 0
+			if m_tr == h_tr:
+				if m_e > h_e:
+					return 1
+				elif m_e < h_e:
+					return 0
 		except:
-			m_e = 0
-			h_e = 0
+			None
 
+		# ARCH
 		if my_arch != his_arch:
 			return -1
-		else:
-			return -2
+
+		# ?!?
+		return -2
 
