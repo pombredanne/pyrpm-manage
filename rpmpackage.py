@@ -47,13 +47,12 @@ class RPMPackage:
 
 	"""
 	@return:
-		-2 : differe by arch
-		-1 : impossible to determine
+		-2 : impossible to determine
+		-1 : same version but differe by arch
 		 0 : not the latest
 		 1 : is the latest
 	"""
 	def is_latest(self, o_rpmpackage):
-		catastrophe	= 0
 		my_version		= self.get("version")
 		my_truerelease	= self.get("release")
 		my_epoch		= self.get("epoch")
@@ -95,7 +94,7 @@ class RPMPackage:
 			h_e = 0
 
 		if my_arch != his_arch:
-			return -2
-		else:				# impossible to determine which is the latest
 			return -1
+		else:
+			return -2
 
