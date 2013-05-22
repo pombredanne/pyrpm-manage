@@ -54,12 +54,14 @@ class RPMPackage:
 	"""
 	def is_latest(self, o_rpmpackage):
 		catastrophe	= 0
-		my_version							= self.get("version")
-		my_truerelease, my_extrarelease		= self.get("release")
-		my_epoch							= self.get("epoch")
-		his_version							= o_rpmpackage.get("version")
-		his_truerelease, his_extrarelease	= o_rpmpackage.get("release")
-		his_epoch							= o_rpmpackage.get("epoch")
+		my_version		= self.get("version")
+		my_truerelease	= self.get("release")
+		my_epoch		= self.get("epoch")
+		my_arch			= self.get("arch")
+		his_version		= o_rpmpackage.get("version")
+		his_truerelease	= o_rpmpackage.get("release")
+		his_epoch		= o_rpmpackage.get("epoch")
+		his_arch		= o_rpmpackage.get("arch")
 
 		try:
 			m_v = float(my_version)
@@ -71,7 +73,6 @@ class RPMPackage:
 		except:
 			m_v = 0
 			h_v = 0
-			catastrophe += 1
 		try:
 			m_tr = float(my_truerelease)
 			h_tr = float(his_truerelease)
@@ -82,7 +83,6 @@ class RPMPackage:
 		except:
 			m_tr = 0
 			h_tr = 0
-			catastrophe += 1
 		try:
 			m_e = float(my_epoch)
 			h_e = float(his_epoch)
@@ -93,8 +93,8 @@ class RPMPackage:
 		except:
 			m_e = 0
 			h_e = 0
-			catastrophe += 1
-		if catastrophe < 3:	# then they differ by arch
+
+		if my_arch != his_arch:
 			return -2
 		else:				# impossible to determine which is the latest
 			return -1
