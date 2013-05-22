@@ -92,7 +92,7 @@ class RPMPackage:
 		# COMPLEX VERSION
 		try:
 			r = self.__complex_version(my_version, his_version)
-			if r in [0, 1]:
+			if r != None:
 				return r
 		except:
 			None
