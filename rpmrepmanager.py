@@ -87,7 +87,6 @@ class RPMRepManager:
 		return signed, unsigned
 
 	def delete_duplicates(self, rpm_list):
-		print("/!\\ NOT IMPLEMENTED " * 4)
 		rpm_hash = {}
 		for o_rpm in rpm_list:
 			if not o_rpm.is_signed() or self.__force_delete:
@@ -96,22 +95,35 @@ class RPMRepManager:
 				except:
 					rpm_hash[o_rpm.get("name")] = [o_rpm]
 
+		rpm_del_list = []
 		for k in rpm_hash:
 			if len(rpm_hash[k]) > 1:
 				o_rpm = rpm_hash[k][0]
+				o_rpm_del = None
 				print(" * " + k)
 				for i in rpm_hash[k][1:]:
 					r = o_rpm.is_latest(i)
 					if r == 0:
-						print("\t" + c.RED + " + will delete " + o_rpm.get("bname")  + " signed: " + str(o_rpm.is_signed()) + c.NC)
+						o_rpm_del = o_rpm
 						o_rpm = i
 					elif r == 1:
-						print("\t" + c.RED + " + will delete " + i.get("bname") + " signed: " + str(i.is_signed()) + c.NC)
+						o_rpm_del = i
 					else:
 						print("\t" + c.BLUE + " + what to do with " + i.get("bname") + " ?" + c.NC)
+						o_rpm_del = None
+
+					if o_rpm_del != None:
+						print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")  + " signed: " + str(o_rpm_del.is_signed()) + c.NC)
+						rpm_list.remove(o_rpm_del)
+						rpm_del_list.append(o_rpm_del.get("fname"))
+
 				print("\t" + c.GREEN + " + take " + o_rpm.get("bname") + " signed: " + str(o_rpm.is_signed()) + c.NC)
 
-		print("/!\\ NOT IMPLEMENTED " * 4)
+		for i in rpm_del_list:
+			if not self.__fake_run:
+				os.remove(i)
+			self.__report_deldup.add_action(os.path.basename(i))
+
 		return rpm_list
 
 	def populate_repo(self, rpms):
