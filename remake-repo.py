@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 noexpandtab
 """
+
+http://projet.beastie.eu/?p=rpm-manage.git;a=summary
+
 How to use ?
 
 /home/rpmuser/rpm											<-- base dir
