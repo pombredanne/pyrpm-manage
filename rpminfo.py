@@ -34,7 +34,7 @@ class RPMInfo:
 				res = hdr[tag]
 				os.close(fdno)
 			except:
-				None
+				pass
 
 		return res
 

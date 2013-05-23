@@ -46,12 +46,19 @@ class RPMRepManager:
 		os.chdir(repo) # if not done, relative symlinks will never be valid.
 	
 		for file in os.listdir(repo):
-			if os.path.islink(repo + file):
+			try:
+				if not os.path.islink(repo + file):
+					raise Exception()
+				if not '.rpm' in file[-4:]:
+					raise Exception()
 				symlink_valid = os.path.exists(os.readlink(repo + file))
-				if '.rpm' in file[-4:] and self.__wipe_repo or not symlink_valid:
-					if not self.__fake_run:
-						os.remove(repo + file)
+				if self.__wipe_repo or not symlink_valid:
 					self.__report_cleanup.add_action(file)
+					if self.__fake_run:
+						raise Exception()
+					os.remove(repo + file)
+			except:
+				pass
 	
 	def move_other_rpms(self):
 		dir = self.__rpmdir + 'other_rpms/'

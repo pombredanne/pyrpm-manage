@@ -88,14 +88,14 @@ class RPMPackage:
 			elif m_v < h_v:
 				return 0
 		except:
-			None
+			pass
 		# COMPLEX VERSION
 		try:
 			r = self.__complex_version(my_version, his_version)
 			if r != None:
 				return r
 		except:
-			None
+			pass
 		# RELEASE
 		try:
 			m_tr = float(my_truerelease)
@@ -118,7 +118,7 @@ class RPMPackage:
 				elif m_e < h_e:
 					return 0
 		except:
-			None
+			pass
 
 		# ARCH
 		if my_arch != his_arch:
