@@ -60,6 +60,9 @@ def main():
 		parser.error('Real or fake ? Are U real ?')
 	elif not (options.real or options.fake):
 		parser.error('No real or fake mode given')
+	
+	if options.verbose and options.report:
+		parser.error('Cannot be verbose and make report.')
 
 	rep = RPMRepManager(
 			options.base,

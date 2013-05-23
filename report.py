@@ -28,7 +28,7 @@ class Report:
 	
 	def print_report(self):
 		timeline = None
-		if self.__sorted:
+		if self.__sorted and not self.__verbose:
 			timeline = sorted(self.__report["timeline"])
 		else:
 			timeline = self.__report["timeline"]

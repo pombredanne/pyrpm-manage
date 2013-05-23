@@ -34,7 +34,7 @@ class RPMRepManager:
 		self.__report_link = Report("link", "linked", self.__verbose, True)
 		self.__report_cleanup = Report("cleanup", "removed symlink", self.__verbose, True)
 		self.__report_other = Report("other_rpms", "moved", self.__verbose, True)
-		self.__report_deldup = Report("deldup", "delete duplicate", self.__verbose, True)
+		self.__report_deldup = Report("deldup", "delete old", self.__verbose, True)
 
 	"""
 	Clean repo by deleting all symlinks.
