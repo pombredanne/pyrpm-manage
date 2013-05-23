@@ -11,7 +11,7 @@ from colors import Colors as c
 
 class RPMRepManager:
 
-	def __init__(self, base, version, arch, repo, fake, cleanup, unsigned, verbose, report, force_delete):
+	def __init__(self, base, version, arch, repo, fake, cleanup, unsigned, verbose, report, force_delete, wipe_repo):
 		if not '/' in base[-1:]:
 			base += '/'
 		if not '/' in repo[-1:]:
@@ -30,6 +30,7 @@ class RPMRepManager:
 		self.__verbose			= True if verbose else False
 		self.__report			= True if report else False
 		self.__force_delete		= True if force_delete else False
+		self.__wipe_repo		= True if wipe_repo else False
 
 		self.__report_link = Report("link", "linked", self.__verbose, True)
 		self.__report_cleanup = Report("cleanup", "removed symlink", self.__verbose, True)
@@ -42,11 +43,15 @@ class RPMRepManager:
 	"""
 	def clean_repo(self):
 		repo = self.__repo
+		os.chdir(repo) # if not done, relative symlinks will never be valid.
 	
 		for file in os.listdir(repo):
-			if os.path.islink(repo + file) and '.rpm' in file[-4:] and not self.__fake_run:
-				os.remove(repo + file)
-			self.__report_cleanup.add_action(file)
+			if os.path.islink(repo + file):
+				symlink_valid = os.path.exists(os.readlink(repo + file))
+				if '.rpm' in file[-4:] and self.__wipe_repo or not symlink_valid:
+					if not self.__fake_run:
+						os.remove(repo + file)
+					self.__report_cleanup.add_action(file)
 	
 	def move_other_rpms(self):
 		dir = self.__rpmdir + 'other_rpms/'
@@ -136,9 +141,10 @@ class RPMRepManager:
 			name = f_rpm.get("bname")
 			arch = f_rpm.get("arch")
 			src = self.__link_relative + self.__version + '/' + arch + '/' + name
-			if not self.__fake_run:
-				os.symlink(src, name)
-			self.__report_link.add_action(name)
+			if not os.path.exists(name):
+				if not self.__fake_run:
+					os.symlink(src, name)
+				self.__report_link.add_action(name)
 	
 	def build_repo(self):
 		os.chdir(self.__repo)

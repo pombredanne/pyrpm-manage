@@ -45,6 +45,7 @@ def main():
 	parser.add_option('--report', action='store_true', help='like verbose but at the end of actions')
 	parser.add_option('--cleanup', action='store_true', help='clean old versions/release of a package. dont touch signed packages unless --force-delete')
 	parser.add_option('--force-delete', action='store_true', help='force deletion of old packages, event if signed. use with CAUTION.')
+	parser.add_option('--wipe-repo', action='store_true', help='wipe repository instead of just remake missing/invalid symlinks to RPM')
 	(options, args) = parser.parse_args()
 
 	if not options.base:
@@ -74,7 +75,8 @@ def main():
 			options.unsigned,
 			options.verbose,
 			options.report,
-			options.force_delete
+			options.force_delete,
+			options.wipe_repo
 			)
 	rep.run()
 	
