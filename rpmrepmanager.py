@@ -107,7 +107,7 @@ class RPMRepManager:
 					if o_rpm_del != None:
 						print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")  + " signed: " + str(o_rpm_del.is_signed()) + c.NC)
 						rpm_list.remove(o_rpm_del)
-						rpm_del_list.append(o_rpm_del.get("fname"))
+						rpm_del_list.append(o_rpm_del)
 
 				print("\t" + c.GREEN + " + take " + o_rpm.get("bname") + " signed: " + str(o_rpm.is_signed()) + c.NC)
 		return rpm_list, rpm_del_list
@@ -124,8 +124,8 @@ class RPMRepManager:
 		rpm_list, rpm_del_list = self.__get_del_list(rpm_list, rpm_hash)
 		for i in rpm_del_list:
 			if not self.__fake_run:
-				os.remove(i)
-			self.__report_deldup.add_action(os.path.basename(i))
+				os.remove(i.get("fname"))
+			self.__report_deldup.add_action(i.get("bname") + " (signed: " + str(i.is_signed()) + ")")
 
 		return rpm_list
 
@@ -179,7 +179,7 @@ class RPMRepManager:
 
 		# 8. Display report if report is set.
 		if not self.__verbose and self.__report:
-			self.__report_other.print_report()
-			self.__report_deldup.print_report()
 			self.__report_cleanup.print_report()
 			self.__report_link.print_report()
+			self.__report_deldup.print_report()
+			self.__report_other.print_report()
