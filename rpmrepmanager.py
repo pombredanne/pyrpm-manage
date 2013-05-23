@@ -64,7 +64,7 @@ class RPMRepManager:
 	def list_rpms(self, dirs):
 		rpms = []
 		for dir in dirs:
-			if not '/' == dir[-1:]:
+			if dir[-1:] != '/':
 				dir += '/'
 
 			list = os.listdir(dir)
@@ -86,15 +86,7 @@ class RPMRepManager:
 
 		return signed, unsigned
 
-	def delete_duplicates(self, rpm_list):
-		rpm_hash = {}
-		for o_rpm in rpm_list:
-			if not o_rpm.is_signed() or self.__force_delete:
-				try:
-					rpm_hash[o_rpm.get("name")].append(o_rpm)
-				except:
-					rpm_hash[o_rpm.get("name")] = [o_rpm]
-
+	def __get_del_list(self, rpm_list, rpm_hash):
 		rpm_del_list = []
 		for k in rpm_hash:
 			if len(rpm_hash[k]) > 1:
@@ -118,7 +110,18 @@ class RPMRepManager:
 						rpm_del_list.append(o_rpm_del.get("fname"))
 
 				print("\t" + c.GREEN + " + take " + o_rpm.get("bname") + " signed: " + str(o_rpm.is_signed()) + c.NC)
+		return rpm_list, rpm_del_list
 
+	def delete_duplicates(self, rpm_list):
+		rpm_hash = {}
+		for o_rpm in rpm_list:
+			if not o_rpm.is_signed() or self.__force_delete:
+				try:
+					rpm_hash[o_rpm.get("name")].append(o_rpm)
+				except:
+					rpm_hash[o_rpm.get("name")] = [o_rpm]
+
+		rpm_list, rpm_del_list = self.__get_del_list(rpm_list, rpm_hash)
 		for i in rpm_del_list:
 			if not self.__fake_run:
 				os.remove(i)
