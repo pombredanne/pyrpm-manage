@@ -5,10 +5,11 @@
 import datetime
 
 class Report:
-	def __init__(self, subject, action, verbose):
+	def __init__(self, subject, action, verbose, sorted):
 		self.__subject = subject
 		self.__action = action
 		self.__verbose = verbose
+		self.__sorted = sorted
 		self.__report = {
 				"subject" : subject,
 				"action"  : action,
@@ -26,6 +27,12 @@ class Report:
 		self.__report["timeline"].append(a)
 	
 	def print_report(self):
-		for a in self.__report["timeline"]:
+		timeline = None
+		if self.__sorted:
+			timeline = sorted(self.__report["timeline"])
+		else:
+			timeline = self.__report["timeline"]
+
+		for a in timeline:
 			self.__print_action(a)
 
