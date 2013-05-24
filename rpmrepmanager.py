@@ -135,9 +135,9 @@ class RPMRepManager:
 
 		rpm_list, rpm_del_list = self.__get_del_list(rpm_list, rpm_hash)
 		for i in rpm_del_list:
+			self.__report_deldup.add_action(i.get("bname") + " (signed: " + str(i.is_signed()) + ")")
 			if not self.__fake_run:
 				os.remove(i.get("fname"))
-			self.__report_deldup.add_action(i.get("bname") + " (signed: " + str(i.is_signed()) + ")")
 
 		return rpm_list
 
