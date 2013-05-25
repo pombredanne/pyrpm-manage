@@ -66,8 +66,8 @@ class RPMRepManager:
 
 		for file in list:
 			if RPMInfo.isa_rpm(dir + file):
-				my_rpm = RPMPackage(dir + file)
-				dest = self.__rpmdir + my_rpm.get("arch") + '/' + file
+				o_rpm = RPMPackage(dir + file)
+				dest = self.__rpmdir + o_rpm.get("arch") + '/' + file
 				if not self.__fake_run:
 					os.rename(dir + file, dest)
 					os.symlink(dest, dir + file)
@@ -98,14 +98,14 @@ class RPMRepManager:
 
 		return signed, unsigned
 
-	def __get_del_list(self, rpm_list, rpm_hash):
+	def __get_del_list(self, l_rpms, h_rpms):
 		rpm_del_list = []
-		for k in rpm_hash:
-			if len(rpm_hash[k]) > 1:
-				o_rpm = rpm_hash[k][0]
+		for k in h_rpms:
+			if len(h_rpms[k]) > 1:
+				o_rpm = h_rpms[k][0]
 				o_rpm_del = None
 				print(" * " + k)
-				for i in rpm_hash[k][1:]:
+				for i in h_rpms[k][1:]:
 					r = o_rpm.is_latest(i)
 					if r == 0:
 						o_rpm_del = o_rpm
@@ -118,28 +118,28 @@ class RPMRepManager:
 
 					if o_rpm_del != None:
 						print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")  + " signed: " + str(o_rpm_del.is_signed()) + c.NC)
-						rpm_list.remove(o_rpm_del)
+						l_rpms.remove(o_rpm_del)
 						rpm_del_list.append(o_rpm_del)
 
 				print("\t" + c.GREEN + " + take " + o_rpm.get("bname") + " signed: " + str(o_rpm.is_signed()) + c.NC)
-		return rpm_list, rpm_del_list
+		return l_rpms, rpm_del_list
 
-	def delete_duplicates(self, rpm_list):
-		rpm_hash = {}
-		for o_rpm in rpm_list:
+	def delete_duplicates(self, l_rpms):
+		h_rpms = {}
+		for o_rpm in l_rpms:
 			if not o_rpm.is_signed() or self.__force_delete:
 				try:
-					rpm_hash[o_rpm.get("name")].append(o_rpm)
+					h_rpms[o_rpm.get("name")].append(o_rpm)
 				except:
-					rpm_hash[o_rpm.get("name")] = [o_rpm]
+					h_rpms[o_rpm.get("name")] = [o_rpm]
 
-		rpm_list, rpm_del_list = self.__get_del_list(rpm_list, rpm_hash)
+		l_rpms, rpm_del_list = self.__get_del_list(l_rpms, h_rpms)
 		for i in rpm_del_list:
 			self.__report_deldup.add_action(i.get("bname") + " (signed: " + str(i.is_signed()) + ")")
 			if not self.__fake_run:
 				os.remove(i.get("fname"))
 
-		return rpm_list
+		return l_rpms
 
 	def populate_repo(self, rpms):
 		os.chdir(self.__repo)
@@ -165,19 +165,19 @@ class RPMRepManager:
 
 		# 2. List all rpms in valid arch -> self.__arch and noarch
 		print(c.PURPLE + 'Listing rpms…' + c.NC)
-		rpm_list = self.list_rpms([self.__rpmdir + self.__arch, self.__rpmdir + 'noarch'])
+		l_rpms = self.list_rpms([self.__rpmdir + self.__arch, self.__rpmdir + 'noarch'])
 
 		# 3. List signed and unsigned packages
 		print(c.PURPLE + 'Sorting signed and unsigned rpms…' + c.NC)
 		if self.__take_unsigned:
 			print(c.RED + 'Taking unsigned packages' + c.NC)
-		signed, unsigned = self.sort_signed(rpm_list)
-		rpm_list = signed + unsigned if self.__take_unsigned else signed
+		signed, unsigned = self.sort_signed(l_rpms)
+		l_rpms = signed + unsigned if self.__take_unsigned else signed
 
 		# 4. Delete duplicates unsigned packages
 		if self.__cleanup:
 			print(c.PURPLE + 'Deleting unsigned duplicated packages…' + c.NC)
-			rpm_list = self.delete_duplicates(rpm_list)
+			l_rpms = self.delete_duplicates(l_rpms)
 
 		# 5. Clean repo before…
 		print(c.PURPLE + 'Cleaning repo…' + c.NC)
@@ -185,7 +185,7 @@ class RPMRepManager:
 
 		# 6. …making symlinks.
 		print(c.PURPLE + 'Populating repo…' + c.NC)
-		self.populate_repo(rpm_list)
+		self.populate_repo(l_rpms)
 
 		# 7. Then make the repo.
 		self.build_repo()
