@@ -61,6 +61,7 @@ class RPMRepManager:
 					if not self.__fake_run:
 						os.remove(repo + file)
 			except OSError:
+				self.__report_cleanup.add_action(file)
 				if not self.__fake_run:
 					os.remove(repo + file)
 			except:

@@ -11,14 +11,17 @@ re_true_release = re.compile(r'^([0-9]?[\.]{0,1}[0-9]+)([\._\-a-z0-9]*)$', re.I)
 
 class RPMPackage:
 	def __init__(self, f_rpm):
+		self.update_cache(f_rpm)
+	
+	def update_cache(self, f_rpm):
 		self.__infos			= {}
 		self.__infos["fname"]	= f_rpm
 		self.__infos["bname"]	= os.path.basename(f_rpm)
-		self.__infos["name"]	= self.get_info(rpm.RPMTAG_NAME)
-		self.__infos["version"]	= self.get_info(rpm.RPMTAG_VERSION)
-		self.__infos["epoch"]	= self.get_info(rpm.RPMTAG_EPOCH)
-		self.__infos["arch"]	= self.get_info(rpm.RPMTAG_ARCH)
-		match = re_true_release.match(self.get_info(rpm.RPMTAG_RELEASE))
+		self.__infos["name"]	= self.get_info(rpm.RPMTAG_NAME, None)
+		self.__infos["version"]	= self.get_info(rpm.RPMTAG_VERSION, None)
+		self.__infos["epoch"]	= self.get_info(rpm.RPMTAG_EPOCH, None)
+		self.__infos["arch"]	= self.get_info(rpm.RPMTAG_ARCH, None)
+		match = re_true_release.match(self.get_info(rpm.RPMTAG_RELEASE, None))
 		self.__infos["release"]	= match.group(1)
 		try:
 			self.__infos["extrarelease"] = match.group(2)
@@ -32,14 +35,22 @@ class RPMPackage:
 		try:
 			return self.__infos[tag]
 		except:
+			pass
+
+		try:
+			return self.get_info(tag, None)
+		except:
 			return None
 
-	def get_info(self, tag):
-		return RPMInfo.get_info(self.get("fname"), tag)
+	def get_info(self, tag, cache_name):
+		info = RPMInfo.get_info(self.get("fname"), tag)
+		if cache_name != None:
+			self.__infos[cache_name] = info
+		return info
 
 	def is_signed(self):
-		gpg = self.get_info(rpm.RPMTAG_SIGGPG)
-		pgp = self.get_info(rpm.RPMTAG_SIGPGP)
+		gpg = self.get_info(rpm.RPMTAG_SIGGPG, None)
+		pgp = self.get_info(rpm.RPMTAG_SIGPGP, None)
 
 		if gpg or pgp:
 			return True
