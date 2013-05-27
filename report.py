@@ -3,8 +3,11 @@
 # vim: tabstop=4 shiftwidth=4 noexpandtab
 
 import datetime
+import sys
 
 class Report:
+	__inline_print_len = 0
+	__inline_print_len_new = 0
 	def __init__(self, subject, action, verbose, sorted):
 		self.__subject = subject
 		self.__action = action
@@ -35,4 +38,14 @@ class Report:
 
 		for a in timeline:
 			self.__print_action(a)
+
+	@staticmethod
+	def inline_print(msg):
+		Report.__inline_print_len_new = len(msg)
+		spaces = 0
+		if Report.__inline_print_len > Report.__inline_print_len_new:
+			spaces = Report.__inline_print_len - len(msg)
+		sys.stdout.write('\r' + msg + ' ' * spaces)
+		sys.stdout.flush()
+		Report.__inline_print_len = Report.__inline_print_len_new
 

@@ -3,6 +3,7 @@
 # vim: tabstop=4 shiftwidth=4 noexpandtab
 
 import os
+import sys
 import rpm
 from report import Report
 from rpmpackage import RPMPackage
@@ -36,6 +37,8 @@ class RPMRepManager:
 		self.__report_cleanup = Report("cleanup", "removed symlink", self.__verbose, True)
 		self.__report_other = Report("other_rpms", "moved", self.__verbose, True)
 		self.__report_deldup = Report("deldup", "delete old", self.__verbose, True)
+
+		self.__inline_print_len = 0
 
 	"""
 	Clean repo by deleting all symlinks.
@@ -167,34 +170,32 @@ class RPMRepManager:
 
 	def run(self):
 		# 1. Move other_rpms to rpm/version/pkg_arch and make a symlink
-		print(c.PURPLE + 'Moving other rpms…' + c.NC)
+		Report.inline_print(c.GREEN + 'Moving other rpms…' + c.NC)
 		self.move_other_rpms()
 
 		# 2. List all rpms in valid arch -> self.__arch and noarch
-		print(c.PURPLE + 'Listing rpms…' + c.NC)
+		Report.inline_print(c.GREEN + 'Listing rpms…' + c.NC)
 		l_rpms = self.list_rpms([self.__rpmdir + self.__arch, self.__rpmdir + 'noarch'])
 
 		# 3. List signed and unsigned packages
 		u_str = ' '
 		if self.__take_unsigned:
 			u_str = ' and unsigned '
-		print(c.PURPLE + 'Sorting signed' + u_str + 'rpms…' + c.NC)
-		if self.__take_unsigned:
-			print(c.RED + 'Taking unsigned packages' + c.NC)
+		Report.inline_print(c.GREEN + 'Sorting signed' + u_str + 'rpms…' + c.NC)
 		signed, unsigned = self.sort_signed(l_rpms)
 		l_rpms = signed + unsigned if self.__take_unsigned else signed
 
 		# 4. Delete duplicates unsigned packages
 		if self.__cleanup:
-			print(c.PURPLE + 'Deleting unsigned duplicated packages…' + c.NC)
+			Report.inline_print(c.GREEN + 'Deleting unsigned duplicated packages…' + c.NC)
 			l_rpms = self.delete_duplicates(l_rpms)
 
 		# 5. Clean repo before…
-		print(c.PURPLE + 'Cleaning repo…' + c.NC)
+		Report.inline_print(c.GREEN + 'Cleaning repo…' + c.NC)
 		self.clean_repo()
 
 		# 6. …making symlinks.
-		print(c.PURPLE + 'Populating repo…' + c.NC)
+		Report.inline_print(c.GREEN + 'Populating repo…' + c.NC)
 		self.populate_repo(l_rpms)
 
 		# 7. Then make the repo.

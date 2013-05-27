@@ -65,6 +65,25 @@ def main():
 	if options.verbose and options.report:
 		parser.error('Cannot be verbose and make report.')
 
+	print("=> Working on repo " + options.repo + " in " + options.base + " for " + options.version + " on arch " + options.arch)
+	print("=> Options: ")
+	if options.unsigned:
+		print("   * Take unsigned packages")
+	if options.report:
+		print("   * Print report at the end")
+	if options.verbose:
+		print("   * Verbose mode")
+	if options.force_delete:
+		print("   * Force deletion of old signed packages")
+	if options.wipe_repo:
+		print("   * Wipe repository before linking")
+	else:
+		print("   * Keep valid symlinks")
+	if options.fake:
+		print("   * Fake mode")
+	else:
+		print("   * Real mode")
+
 	rep = RPMRepManager(
 			options.base,
 			options.version,
