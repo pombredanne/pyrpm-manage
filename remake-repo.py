@@ -65,7 +65,7 @@ def main():
 	if options.verbose and options.report:
 		parser.error('Cannot be verbose and make report.')
 
-	print("=> Working on repo " + options.repo + " in " + options.base + " for " + options.version + " on arch " + options.arch)
+	print("=> Working on repo " + options.repo + " for " + options.version + " on arch " + options.arch)
 	print("=> Options: ")
 	if options.unsigned:
 		print("   * Take unsigned packages")
