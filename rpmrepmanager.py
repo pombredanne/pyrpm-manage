@@ -175,7 +175,10 @@ class RPMRepManager:
 		l_rpms = self.list_rpms([self.__rpmdir + self.__arch, self.__rpmdir + 'noarch'])
 
 		# 3. List signed and unsigned packages
-		print(c.PURPLE + 'Sorting signed and unsigned rpms…' + c.NC)
+		u_str = ' '
+		if self.__take_unsigned:
+			u_str = ' and unsigned '
+		print(c.PURPLE + 'Sorting signed' + u_str + 'rpms…' + c.NC)
 		if self.__take_unsigned:
 			print(c.RED + 'Taking unsigned packages' + c.NC)
 		signed, unsigned = self.sort_signed(l_rpms)
