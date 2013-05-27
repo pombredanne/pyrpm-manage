@@ -203,6 +203,7 @@ class RPMRepManager:
 
 		# 8. Display report if report is set.
 		if not self.__verbose and self.__report:
+			print("")
 			self.__report_cleanup.print_report()
 			self.__report_link.print_report()
 			self.__report_deldup.print_report()
