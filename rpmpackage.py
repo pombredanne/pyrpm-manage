@@ -42,6 +42,10 @@ class RPMPackage:
 		except:
 			return None
 
+	"""
+	Can make a [cache_name] key entry in cached datas.
+	Custom cached datas cannot be updated via update_cache.
+	"""
 	def get_info(self, tag, cache_name):
 		info = RPMInfo.get_info(self.get("fname"), tag)
 		if cache_name != None:
