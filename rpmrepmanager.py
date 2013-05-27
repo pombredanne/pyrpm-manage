@@ -52,7 +52,8 @@ class RPMRepManager:
 				if not '.rpm' in file[-4:]:
 					raise Exception()
 				symlink_valid = os.path.exists(os.readlink(repo + file))
-				if self.__wipe_repo or not symlink_valid:
+				o_rpm = RPMPackage(repo + file)
+				if self.__wipe_repo or not symlink_valid or (not self.__take_unsigned and not o_rpm.is_signed()):
 					self.__report_cleanup.add_action(file)
 					if self.__fake_run:
 						raise Exception()
