@@ -116,9 +116,12 @@ class RPMPackage:
             pass
 
         # COMPLEX VERSION
-        res = self.__complex_version(my_version, his_version)
-        if res != None:
-            return res
+        try:
+            res = self.__complex_version(my_version, his_version)
+            if res != None:
+                return res
+        except ValueError:
+            pass
 
         # RELEASE
         try:
