@@ -10,11 +10,17 @@ from rpminfo import RPMInfo
 RE_TRUE_RELEASE = re.compile(r'^([0-9]?[\.]{0,1}[0-9]+)([\._\-a-z0-9]*)$', re.I)
 
 class RPMPackage:
+    """
+    Make object for RPM package and get infos about.
+    """
     def __init__(self, f_rpm):
+        self.__infos    = {}
         self.update_cache(f_rpm)
     
     def update_cache(self, f_rpm):
-        self.__infos			= {}
+        """
+        Update/initialize cached datas of RPM [f_rpm]
+        """
         self.__infos["fname"]	= f_rpm
         self.__infos["bname"]	= os.path.basename(f_rpm)
         self.__infos["name"]	= self.get_info(rpm.RPMTAG_NAME, None)
@@ -25,34 +31,34 @@ class RPMPackage:
         self.__infos["release"]	= match.group(1)
         try:
             self.__infos["extrarelease"] = match.group(2)
-        except:
+        except KeyError:
             self.__infos["extrarelease"] = ''
 
-    """
-    Retrieve cached datas about package.
-    """
     def get(self, tag):
+        """
+        Retrieve cached datas about package.
+        """
         try:
             return self.__infos[tag]
-        except:
+        except KeyError:
             pass
 
-        try:
-            return self.get_info(tag, None)
-        except:
-            return None
+        return self.get_info(tag, None)
 
-    """
-    Can make a [cache_name] key entry in cached datas.
-    Custom cached datas cannot be updated via update_cache.
-    """
     def get_info(self, tag, cache_name):
+        """
+        Can make a [cache_name] key entry in cached datas.
+        Custom cached datas cannot be updated via update_cache.
+        """
         info = RPMInfo.get_info(self.get("fname"), tag)
         if cache_name != None:
             self.__infos[cache_name] = info
         return info
 
     def is_signed(self):
+        """
+        Check if package is GPG or PGP signed.
+        """
         gpg = self.get_info(rpm.RPMTAG_SIGGPG, None)
         pgp = self.get_info(rpm.RPMTAG_SIGPGP, None)
 
@@ -61,6 +67,10 @@ class RPMPackage:
         return False
 
     def __complex_version(self, my_version, his_version):
+        """
+        If simple version test failed, try with char
+        by char comparition.
+        """
         my_s_version	= my_version.split('.')
         his_s_version	= his_version.split('.')
 
@@ -77,14 +87,14 @@ class RPMPackage:
                 return 1
         return None
 
-    """
-    @return:
-        -2 : impossible to determine
-        -1 : same version but differe by arch
-         0 : not the latest
-         1 : is the latest
-    """
     def is_latest(self, o_rpmpackage):
+        """
+        @return:
+            -2 : impossible to determine
+            -1 : same version but differe by arch
+             0 : not the latest
+             1 : is the latest
+        """
         my_version		= self.get("version")
         my_truerelease	= self.get("release")
         my_epoch		= self.get("epoch")
@@ -102,15 +112,14 @@ class RPMPackage:
                 return 1
             elif m_v < h_v:
                 return 0
-        except:
+        except ValueError:
             pass
+
         # COMPLEX VERSION
-        try:
-            res = self.__complex_version(my_version, his_version)
-            if res != None:
-                return res
-        except:
-            pass
+        res = self.__complex_version(my_version, his_version)
+        if res != None:
+            return res
+
         # RELEASE
         try:
             m_tr = float(my_truerelease)
@@ -119,7 +128,7 @@ class RPMPackage:
                 return 1
             elif m_tr < h_tr:
                 return 0
-        except:
+        except ValueError:
             m_tr = 0
             h_tr = 0
 
@@ -132,7 +141,7 @@ class RPMPackage:
                     return 1
                 elif m_e < h_e:
                     return 0
-        except:
+        except ValueError:
             pass
 
         # ARCH
