@@ -7,11 +7,11 @@ import sys
 class Report:
     __inline_print_len = 0
     __inline_print_len_new = 0
-    def __init__(self, subject, action, verbose, sorted):
+    def __init__(self, subject, action, verbose, sort):
         self.__subject = subject
         self.__action = action
         self.__verbose = verbose
-        self.__sorted = sorted
+        self.__sort = sort
         self.__report = {
                 "subject" : subject,
                 "action"  : action,
@@ -30,7 +30,7 @@ class Report:
     
     def print_report(self):
         timeline = None
-        if self.__sorted and not self.__verbose:
+        if self.__sort and not self.__verbose:
             timeline = sorted(self.__report["timeline"])
         else:
             timeline = self.__report["timeline"]
