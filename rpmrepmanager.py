@@ -229,6 +229,7 @@ class RPMRepManager:
         self.populate_repo(l_rpms)
 
         # 7. Then make the repo.
+        print("")
         self.build_repo()
 
         # 8. Display report if report is set.
