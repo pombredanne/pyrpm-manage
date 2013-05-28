@@ -1,1 +1,2 @@
-* Have the choice to let latest signed package and latest unsigned package and delete older versions
+* Have the choice to let latest signed package and latest unsigned package and delete older versions.
+* Better complex_version -> try to determine if a package is more recent even if there are chars in version number.
