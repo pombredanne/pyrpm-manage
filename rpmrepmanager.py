@@ -3,8 +3,6 @@
 # vim: tabstop=4 shiftwidth=4 noexpandtab
 
 import os
-import sys
-import rpm
 from report import Report
 from rpmpackage import RPMPackage
 from rpminfo import RPMInfo
