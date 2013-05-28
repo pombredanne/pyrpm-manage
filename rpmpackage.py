@@ -66,7 +66,8 @@ class RPMPackage:
             return True
         return False
 
-    def __complex_version(self, my_version, his_version):
+    @staticmethod
+    def __complex_version(my_version, his_version):
         """
         If simple version test failed, try with char
         by char comparition.
@@ -117,7 +118,7 @@ class RPMPackage:
 
         # COMPLEX VERSION
         try:
-            res = self.__complex_version(my_version, his_version)
+            res = RPMPackage.__complex_version(my_version, his_version)
             if res != None:
                 return res
         except ValueError:

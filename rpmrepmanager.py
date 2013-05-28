@@ -89,7 +89,8 @@ class RPMRepManager:
                     os.symlink(dest, dir_ + f_rpm)
                 self.__report_other.add_action(dir_ + f_rpm)
 
-    def list_rpms(self, dirs):
+    @staticmethod
+    def list_rpms(dirs):
         """
         Get a list of RPM packages in dirs.
         """
@@ -105,7 +106,8 @@ class RPMRepManager:
 
         return rpms
 
-    def sort_signed(self, rpms):
+    @staticmethod
+    def sort_signed(rpms):
         """
         Give a list of signed packages and unsigned ones.
         """
@@ -120,7 +122,8 @@ class RPMRepManager:
 
         return signed, unsigned
 
-    def __get_del_list(self, l_rpms, h_rpms):
+    @staticmethod
+    def __get_del_list(l_rpms, h_rpms):
         """
         Make the list of RPMS to delete.
         """
@@ -161,7 +164,7 @@ class RPMRepManager:
                 except KeyError:
                     h_rpms[o_rpm.get("name")] = [o_rpm]
 
-        l_rpms, rpm_del_list = self.__get_del_list(l_rpms, h_rpms)
+        l_rpms, rpm_del_list = RPMRepManager.__get_del_list(l_rpms, h_rpms)
         for i in rpm_del_list:
             self.__report_deldup.add_action(i.get("bname") + " (signed: " + str(i.is_signed()) + ")")
             if not self.__fake_run:
@@ -202,14 +205,14 @@ class RPMRepManager:
 
         # 2. List all rpms in valid arch -> self.__arch and noarch
         Report.inline_print(c.GREEN + 'Listing rpms…' + c.NC)
-        l_rpms = self.list_rpms([self.__rpmdir + self.__arch, self.__rpmdir + 'noarch'])
+        l_rpms = RPMRepManager.list_rpms([self.__rpmdir + self.__arch, self.__rpmdir + 'noarch'])
 
         # 3. List signed and unsigned packages
         u_str = ' '
         if self.__take_unsigned:
             u_str = ' and unsigned '
         Report.inline_print(c.GREEN + 'Sorting signed' + u_str + 'rpms…' + c.NC)
-        signed, unsigned = self.sort_signed(l_rpms)
+        signed, unsigned = RPMRepManager.sort_signed(l_rpms)
         l_rpms = signed + unsigned if self.__take_unsigned else signed
 
         # 4. Delete duplicates unsigned packages
