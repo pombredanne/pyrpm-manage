@@ -5,8 +5,13 @@
 import sys
 
 class Report:
+    """
+    Make reports of actions made.
+    Print it sorted or chronological order.
+    """
     __inline_print_len = 0
     __inline_print_len_new = 0
+
     def __init__(self, subject, action, verbose, sort):
         self.__subject = subject
         self.__action = action
@@ -19,16 +24,27 @@ class Report:
                 }
 
     def __print_action(self, action):
-        print(str(action[0]) + " + " + self.__report["action"] + ' : ' + action[1])
+        """
+        Print an action.
+        """
+        print(str(action[0]) + " + " +
+                self.__report["action"] + ' : ' + action[1])
 
 
     def add_action(self, msg):
+        """
+        Add an action. Just give a message,
+        it will be prefixed by self.__report["action"]
+        """
         action = ['', msg]
         if self.__verbose:
             self.__print_action(action)
         self.__report["timeline"].append(action)
     
     def print_report(self):
+        """
+        Print the whole report, sorted or not.
+        """
         timeline = None
         if self.__sort and not self.__verbose:
             timeline = sorted(self.__report["timeline"])
@@ -40,6 +56,9 @@ class Report:
 
     @staticmethod
     def inline_print(msg):
+        """
+        To print messages at the same line each.
+        """
         Report.__inline_print_len_new = len(msg)
         spaces = 0
         if Report.__inline_print_len > Report.__inline_print_len_new:
