@@ -125,7 +125,7 @@ class RPMRepManager:
 						o_rpm_del = None
 
 					if o_rpm_del != None:
-						print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")  + " signed: " + str(o_rpm_del.is_signed()) + c.NC)
+						print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")	 + " signed: " + str(o_rpm_del.is_signed()) + c.NC)
 						l_rpms.remove(o_rpm_del)
 						rpm_del_list.append(o_rpm_del)
 
