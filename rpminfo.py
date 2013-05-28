@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# vim: tabstop=4 shiftwidth=4 noexpandtab
+# vim: tabstop=4 shiftwidth=4 expandtab
 
 import os
 import rpm
 
 class RPMInfo:
+    def __init__():
+        pass
+
     @staticmethod
     def isa_rpm(f_rpm):
         if os.path.isfile(f_rpm) and '.rpm' in f_rpm[-4:] and not os.path.islink(f_rpm):
@@ -14,21 +17,21 @@ class RPMInfo:
 
     @staticmethod
     def get_info(f_rpm, tag):
-        ts = rpm.ts()
+        transaction = rpm.ts()
         fdno = os.open(f_rpm, os.O_RDONLY)
 
         res = None
         hdr = None
 
         try:
-            hdr = ts.hdrFromFdno(fdno)
+            hdr = transaction.hdrFromFdno(fdno)
         except:
             try:
                 rpm.delSign(f_rpm)
             except:
                 os.system('rpmsign --delsign ' + f_rpm + ' 2>/dev/null')
-            fdno = os.open(self.get("fname"), os.O_RDONLY)
-            hdr = ts.hdrFromFdno(fdno)
+            fdno = os.open(f_rpm, os.O_RDONLY)
+            hdr = transaction.hdrFromFdno(fdno)
         finally:
             try:
                 res = hdr[tag]

@@ -46,51 +46,51 @@ class RPMRepManager:
         repo = self.__repo
         os.chdir(repo) # if not done, relative symlinks will never be valid.
     
-        for file in os.listdir(repo):
+        for f_rpm in os.listdir(repo):
             try:
-                if not '.rpm' in file[-4:]:
+                if not '.rpm' in f_rpm[-4:]:
                     raise Exception()
-                if not os.path.islink(repo + file):
-                    raise Exception(repo + file + " is not a symlink")
-                o_rpm = RPMPackage(repo + file)
+                if not os.path.islink(repo + f_rpm):
+                    raise Exception(repo + f_rpm + " is not a symlink")
+                o_rpm = RPMPackage(repo + f_rpm)
                 if self.__wipe_repo:
-                    self.__report_cleanup.add_action(file)
+                    self.__report_cleanup.add_action(f_rpm)
                     if not self.__fake_run:
-                        os.remove(repo + file)
+                        os.remove(repo + f_rpm)
                 elif not (self.__take_unsigned or o_rpm.is_signed()):
-                    self.__report_cleanup.add_action(file)
+                    self.__report_cleanup.add_action(f_rpm)
                     if not self.__fake_run:
-                        os.remove(repo + file)
+                        os.remove(repo + f_rpm)
             except OSError:
-                self.__report_cleanup.add_action(file)
+                self.__report_cleanup.add_action(f_rpm)
                 if not self.__fake_run:
-                    os.remove(repo + file)
+                    os.remove(repo + f_rpm)
             except:
                 pass
     
     def move_other_rpms(self):
-        dir = self.__rpmdir + 'other_rpms/'
-        list = os.listdir(dir)
+        dir_ = self.__rpmdir + 'other_rpms/'
+        list_f = os.listdir(dir_)
 
-        for file in list:
-            if RPMInfo.isa_rpm(dir + file):
-                o_rpm = RPMPackage(dir + file)
-                dest = self.__rpmdir + o_rpm.get("arch") + '/' + file
+        for f_rpm in list_f:
+            if RPMInfo.isa_rpm(dir_ + f_rpm):
+                o_rpm = RPMPackage(dir_ + f_rpm)
+                dest = self.__rpmdir + o_rpm.get("arch") + '/' + f_rpm
                 if not self.__fake_run:
-                    os.rename(dir + file, dest)
-                    os.symlink(dest, dir + file)
-                self.__report_other.add_action(dir + file)
+                    os.rename(dir_ + f_rpm, dest)
+                    os.symlink(dest, dir_ + f_rpm)
+                self.__report_other.add_action(dir_ + f_rpm)
 
     def list_rpms(self, dirs):
         rpms = []
-        for dir in dirs:
-            if dir[-1:] != '/':
-                dir += '/'
+        for dir_ in dirs:
+            if dir_[-1:] != '/':
+                dir_ += '/'
 
-            list = os.listdir(dir)
-            for file in list:
-                if RPMInfo.isa_rpm(dir + file):
-                    rpms.append(RPMPackage(dir + file))
+            list_f = os.listdir(dir_)
+            for f_rpm in list_f:
+                if RPMInfo.isa_rpm(dir_ + f_rpm):
+                    rpms.append(RPMPackage(dir_ + f_rpm))
 
         return rpms
 
@@ -114,11 +114,11 @@ class RPMRepManager:
                 o_rpm_del = None
                 print(" * " + k)
                 for i in h_rpms[k][1:]:
-                    r = o_rpm.is_latest(i)
-                    if r == 0:
+                    res = o_rpm.is_latest(i)
+                    if res == 0:
                         o_rpm_del = o_rpm
                         o_rpm = i
-                    elif r == 1:
+                    elif res == 1:
                         o_rpm_del = i
                     else:
                         print("\t" + c.BLUE + " + what to do with " + i.get("bname") + " ?" + c.NC)

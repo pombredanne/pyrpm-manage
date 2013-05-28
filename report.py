@@ -18,15 +18,15 @@ class Report:
                 "timeline": []
                 }
 
-    def __print_action(self, a):
-        print(str(a[0]) + " + " + self.__report["action"] + ' : ' + a[1])
+    def __print_action(self, action):
+        print(str(action[0]) + " + " + self.__report["action"] + ' : ' + action[1])
 
 
     def add_action(self, msg):
-        a = ['', msg]
+        action = ['', msg]
         if self.__verbose:
-            self.__print_action(a)
-        self.__report["timeline"].append(a)
+            self.__print_action(action)
+        self.__report["timeline"].append(action)
     
     def print_report(self):
         timeline = None
@@ -35,8 +35,8 @@ class Report:
         else:
             timeline = self.__report["timeline"]
 
-        for a in timeline:
-            self.__print_action(a)
+        for action in timeline:
+            self.__print_action(action)
 
     @staticmethod
     def inline_print(msg):

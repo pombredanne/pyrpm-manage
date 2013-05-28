@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# vim: tabstop=4 shiftwidth=4 noexpandtab
+# vim: tabstop=4 shiftwidth=4 expandtab
 
 import os
 import re
 import rpm
 from rpminfo import RPMInfo
 
-re_true_release = re.compile(r'^([0-9]?[\.]{0,1}[0-9]+)([\._\-a-z0-9]*)$', re.I)
+RE_TRUE_RELEASE = re.compile(r'^([0-9]?[\.]{0,1}[0-9]+)([\._\-a-z0-9]*)$', re.I)
 
 class RPMPackage:
     def __init__(self, f_rpm):
@@ -21,7 +21,7 @@ class RPMPackage:
         self.__infos["version"]	= self.get_info(rpm.RPMTAG_VERSION, None)
         self.__infos["epoch"]	= self.get_info(rpm.RPMTAG_EPOCH, None)
         self.__infos["arch"]	= self.get_info(rpm.RPMTAG_ARCH, None)
-        match = re_true_release.match(self.get_info(rpm.RPMTAG_RELEASE, None))
+        match = RE_TRUE_RELEASE.match(self.get_info(rpm.RPMTAG_RELEASE, None))
         self.__infos["release"]	= match.group(1)
         try:
             self.__infos["extrarelease"] = match.group(2)
@@ -106,9 +106,9 @@ class RPMPackage:
             pass
         # COMPLEX VERSION
         try:
-            r = self.__complex_version(my_version, his_version)
-            if r != None:
-                return r
+            res = self.__complex_version(my_version, his_version)
+            if res != None:
+                return res
         except:
             pass
         # RELEASE
