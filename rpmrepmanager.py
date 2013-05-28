@@ -9,7 +9,9 @@ from rpminfo import RPMInfo
 from colors import Colors as c
 
 class RPMRepManager:
-
+    """
+    Manage RPM repository.
+    """
     def __init__(self, base, version, arch, repo, fake, cleanup, unsigned, verbose, report, force_delete, wipe_repo):
         if not '/' in base[-1:]:
             base += '/'
@@ -38,11 +40,11 @@ class RPMRepManager:
 
         self.__inline_print_len = 0
 
-    """
-    Clean repo by deleting all symlinks.
-    Doesn't rebuild repo database.
-    """
     def clean_repo(self):
+        """
+        Clean repo by deleting all symlinks.
+        Doesn't rebuild repo database.
+        """
         repo = self.__repo
         os.chdir(repo) # if not done, relative symlinks will never be valid.
     
@@ -69,6 +71,12 @@ class RPMRepManager:
                 pass
     
     def move_other_rpms(self):
+        """
+        Move RPMs from elsewhere to the right
+        arch subdirectory and make a symlink to.
+
+        NEVER touch these symlinks.
+        """
         dir_ = self.__rpmdir + 'other_rpms/'
         list_f = os.listdir(dir_)
 
@@ -82,6 +90,9 @@ class RPMRepManager:
                 self.__report_other.add_action(dir_ + f_rpm)
 
     def list_rpms(self, dirs):
+        """
+        Get a list of RPM packages in dirs.
+        """
         rpms = []
         for dir_ in dirs:
             if dir_[-1:] != '/':
@@ -95,6 +106,9 @@ class RPMRepManager:
         return rpms
 
     def sort_signed(self, rpms):
+        """
+        Give a list of signed packages and unsigned ones.
+        """
         signed = []
         unsigned = []
 
@@ -107,6 +121,9 @@ class RPMRepManager:
         return signed, unsigned
 
     def __get_del_list(self, l_rpms, h_rpms):
+        """
+        Make the list of RPMS to delete.
+        """
         rpm_del_list = []
         for k in h_rpms:
             if len(h_rpms[k]) > 1:
@@ -133,12 +150,15 @@ class RPMRepManager:
         return l_rpms, rpm_del_list
 
     def delete_duplicates(self, l_rpms):
+        """
+        Remove old packages following conditions signed and force_delete.
+        """
         h_rpms = {}
         for o_rpm in l_rpms:
             if not o_rpm.is_signed() or self.__force_delete:
                 try:
                     h_rpms[o_rpm.get("name")].append(o_rpm)
-                except:
+                except KeyError:
                     h_rpms[o_rpm.get("name")] = [o_rpm]
 
         l_rpms, rpm_del_list = self.__get_del_list(l_rpms, h_rpms)
@@ -150,6 +170,9 @@ class RPMRepManager:
         return l_rpms
 
     def populate_repo(self, rpms):
+        """
+        Make symlinks to RPMs in repository.
+        """
         os.chdir(self.__repo)
 
         for f_rpm in rpms:
@@ -162,11 +185,17 @@ class RPMRepManager:
                 self.__report_link.add_action(name)
     
     def build_repo(self):
+        """
+        Build repository.
+        """
         os.chdir(self.__repo)
         if not self.__fake_run:
             os.system('createrepo .')
 
     def run(self):
+        """
+        Run everything.
+        """
         # 1. Move other_rpms to rpm/version/pkg_arch and make a symlink
         Report.inline_print(c.GREEN + 'Moving other rpms…' + c.NC)
         self.move_other_rpms()
