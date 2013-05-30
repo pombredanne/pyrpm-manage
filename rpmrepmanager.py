@@ -38,8 +38,6 @@ class RPMRepManager:
         self.__report_other = Report("other_rpms", "moved", self.__verbose, True)
         self.__report_deldup = Report("deldup", "delete old", self.__verbose, True)
 
-        self.__inline_print_len = 0
-
     def clean_repo(self):
         """
         Clean repo by deleting all symlinks.
@@ -54,6 +52,7 @@ class RPMRepManager:
                     raise Exception()
                 if not os.path.islink(repo + f_rpm):
                     raise Exception(repo + f_rpm + " is not a symlink")
+
                 o_rpm = RPMPackage(repo + f_rpm)
                 if self.__wipe_repo:
                     self.__report_cleanup.add_action(f_rpm)
@@ -158,7 +157,7 @@ class RPMRepManager:
         """
         h_rpms = {}
         for o_rpm in l_rpms:
-            if not o_rpm.is_signed() or self.__force_delete:
+            if self.__force_delete or not o_rpm.is_signed():
                 try:
                     h_rpms[o_rpm.get("name")].append(o_rpm)
                 except KeyError:
@@ -217,7 +216,7 @@ class RPMRepManager:
 
         # 4. Delete duplicates unsigned packages
         if self.__cleanup:
-            Report.inline_print(c.GREEN + 'Deleting unsigned duplicated packages…' + c.NC)
+            Report.inline_print(c.GREEN + 'Deleting duplicated packages…' + c.NC)
             l_rpms = self.delete_duplicates(l_rpms)
 
         # 5. Clean repo before…
