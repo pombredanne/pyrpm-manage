@@ -1,1 +1,4 @@
-.pyc
+LAST_CHANGE
+push-script.sh
+rpm-build.sh
+*.pyc
