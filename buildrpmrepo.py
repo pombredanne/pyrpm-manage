@@ -61,6 +61,9 @@ def main():
         parser.error('Real or fake ? Are U real ?')
     elif not (options.real or options.fake):
         parser.error('No real or fake mode given')
+
+    if options.force_delete and not options.cleanup:
+        parser.error('Cannot force deletion if you dont want to --cleanup')
     
     if options.verbose and options.report:
         parser.error('Cannot be verbose and make report.')
@@ -69,10 +72,6 @@ def main():
     print("=> Options: ")
     if options.unsigned:
         print("	  * Take unsigned packages")
-    if options.report:
-        print("	  * Print report at the end")
-    if options.verbose:
-        print("	  * Verbose mode")
     if options.force_delete:
         print("	  * Force deletion of old signed packages")
     if options.wipe_repo:
@@ -83,6 +82,10 @@ def main():
         print("	  * Fake mode")
     else:
         print("	  * Real mode")
+    if options.report:
+        print("	  * Print report at the end")
+    if options.verbose:
+        print("	  * Verbose mode")
 
     rep = RPMRepManager(
             options.base,
