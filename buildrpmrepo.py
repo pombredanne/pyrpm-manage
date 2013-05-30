@@ -3,7 +3,7 @@
 # vim: tabstop=4 shiftwidth=4 expandtab
 """
 
-http://projet.beastie.eu/?p=rpm-manage.git;a=summary
+http://projet.beastie.eu/?p=pyrpm-manage.git;a=summary
 
 How to use ?
 
