@@ -67,3 +67,10 @@ class Report:
         sys.stdout.flush()
         Report.__inline_print_len = Report.__inline_print_len_new
 
+    @staticmethod
+    def newline():
+        """
+        \n
+        """
+        sys.stdout.write('\n')
+        sys.stdout.flush()

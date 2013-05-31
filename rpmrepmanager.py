@@ -228,12 +228,12 @@ class RPMRepManager:
         self.populate_repo(l_rpms)
 
         # 7. Then make the repo.
-        print("")
+        Report.newline()
         self.build_repo()
 
         # 8. Display report if report is set.
         if not self.__verbose and self.__report:
-            print("")
+            Report.newline()
             self.__report_cleanup.print_report()
             self.__report_link.print_report()
             self.__report_deldup.print_report()
