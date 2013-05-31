@@ -36,7 +36,7 @@ class RPMPackage:
 
     def get(self, tag):
         """
-        Retrieve cached datas about package.
+        Retrieve cached data about package.
         """
         try:
             return self.__infos[tag]
