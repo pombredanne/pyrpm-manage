@@ -6,6 +6,7 @@ import os
 import re
 import rpm
 from rpminfo import RPMInfo
+from distutils.version import LooseVersion
 
 RE_TRUE_RELEASE = re.compile(r'^([0-9]?[\.]{0,1}[0-9]+)([\._\-a-z0-9]*)$', re.I)
 
@@ -66,92 +67,10 @@ class RPMPackage:
             return True
         return False
 
-    @staticmethod
-    def __complex_version(my_version, his_version):
-        """
-        If simple version test failed, try with char
-        by char comparition.
-        """
-        my_s_version	= my_version.split('.')
-        his_s_version	= his_version.split('.')
-
-        m_range = len(my_s_version)
-        if len(his_s_version) < m_range:
-            m_range = len(his_s_version)
-
-        for i in range(m_range):
-            m_v = int(my_s_version[i])
-            h_v = int(his_s_version[i])
-            if m_v < h_v:
-                return 0
-            elif m_v > h_v:
-                return 1
-        return None
 
     def is_latest(self, o_rpmpackage):
-        """
-        @return:
-            -2 : impossible to determine
-            -1 : same version but differe by arch
-             0 : not the latest
-             1 : is the latest
-        """
-        my_version		= self.get("version")
-        my_truerelease	= self.get("release")
-        my_epoch		= self.get("epoch")
-        my_arch			= self.get("arch")
-        his_version		= o_rpmpackage.get("version")
-        his_truerelease	= o_rpmpackage.get("release")
-        his_epoch		= o_rpmpackage.get("epoch")
-        his_arch		= o_rpmpackage.get("arch")
-
-        # VERSION
-        try:
-            m_v = float(my_version)
-            h_v = float(his_version)
-            if m_v > h_v:
-                return 1
-            elif m_v < h_v:
-                return 0
-        except ValueError:
-            pass
-
-        # COMPLEX VERSION
-        try:
-            res = RPMPackage.__complex_version(my_version, his_version)
-            if res != None:
-                return res
-        except ValueError:
-            pass
-
-        # RELEASE
-        try:
-            m_tr = float(my_truerelease)
-            h_tr = float(his_truerelease)
-            if m_tr > h_tr:
-                return 1
-            elif m_tr < h_tr:
-                return 0
-        except ValueError:
-            m_tr = 0
-            h_tr = 0
-
-        # EPOCH
-        try:
-            m_e = float(my_epoch)
-            h_e = float(his_epoch)
-            if m_tr == h_tr:
-                if m_e > h_e:
-                    return 1
-                elif m_e < h_e:
-                    return 0
-        except ValueError:
-            pass
-
-        # ARCH
-        if my_arch != his_arch:
+        myv_s = self.get('version') + '-' + self.get('release') + '-' + self.get('epoch')
+        ov_s = o_rpmpackage.get('version') + '-' + o_rpmpackage.get('release') + '-' + self.get('epoch')
+        if LooseVersion(myv_s) == LooseVersion(ov_s) and self.get('arch') != o_rpmpackage.get('arch'):
             return -1
-
-        # ?!?
-        return -2
-
+        return LooseVersion(myv_s) > LooseVersion(ov_s)
