@@ -74,7 +74,9 @@ class RPMRepManager:
         Move RPMs from elsewhere to the right
         arch subdirectory and make a symlink to.
 
-        NEVER touch these symlinks.
+        NEVER touch these symlinks. The script don't
+        care of them but it will be useful to remove
+        them if not needed.
         """
         dir_ = self.__rpmdir + 'other_rpms/'
         list_f = os.listdir(dir_)
@@ -128,16 +130,17 @@ class RPMRepManager:
         """
         rpm_del_list = []
         o_rpm_del = None
-        dict_ = dict((k, v) for k, v in h_rpms.iteritems() if len(v) > 1)
+        h_rpms_ = dict((k, v) for k, v in h_rpms.iteritems() if len(v) > 1)
 
-        for k in dict_:
-            v = dict_[k]
+        for k in h_rpms_:
+            v = h_rpms_[k]
             o_rpm = v[0]
             print("\n * " + k)
             for i in v[1:]:
                 res = o_rpm.is_latest(i)
                 if res == -1:
-                    print("\t" + c.BLUE + " + what to do with " + i.get("bname") + " ?" + c.NC)
+                    print("\t" + c.BLUE + " + what to do with " + i.get("bname")
+                            + " ?" + c.NC)
                     o_rpm_del = None
                 elif not res:
                     o_rpm_del = o_rpm
@@ -170,7 +173,8 @@ class RPMRepManager:
 
         l_rpms, rpm_del_list = RPMRepManager.__get_del_list(l_rpms, h_rpms)
         for i in rpm_del_list:
-            self.__report_deldup.add_action(i.get("bname") + " (signed: " + str(i.get("signed")) + ")")
+            self.__report_deldup.add_action(i.get("bname") +
+                    " (signed: " + str(i.get("signed")) + ")")
             if not self.__fake_run:
                 os.remove(i.get("fname"))
 
@@ -186,6 +190,7 @@ class RPMRepManager:
             name = f_rpm.get("bname")
             arch = f_rpm.get("arch")
             src = self.__link_relative + self.__version + '/' + arch + '/' + name
+
             if not os.path.exists(name):
                 if not self.__fake_run:
                     os.symlink(src, name)
@@ -209,7 +214,8 @@ class RPMRepManager:
 
         # 2. List all rpms in valid arch -> self.__arch and noarch
         Report.inline_print('2/6 Listing rpms…')
-        l_rpms = RPMRepManager.list_rpms([self.__rpmdir + self.__arch, self.__rpmdir + 'noarch'])
+        arch_l = [self.__rpmdir + self.__arch, self.__rpmdir + 'noarch']
+        l_rpms = RPMRepManager.list_rpms(arch_l)
 
         # 3. List signed and unsigned packages
         u_str = ' '
