@@ -37,7 +37,7 @@ class RPMPackage:
         self.get_info(rpm.RPMTAG_SIGGPG, "gpg")
         self.__infos["signed"] = False
         if self.get("pgp") or self.get("gpg"):
-            self.__info["signed"] = True
+            self.__infos["signed"] = True
 
         match = RE_TRUE_RELEASE.match(self.get("fullrelease"))
         self.__infos["release"]	= match.group(1)
