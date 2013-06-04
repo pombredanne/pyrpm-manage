@@ -38,6 +38,17 @@ class RPMRepManager:
         self.__report_other = Report("other_rpms", "moved", self.__verbose, True)
         self.__report_deldup = Report("deldup", "delete old", self.__verbose, True)
 
+    def remove(self, f_file):
+        if not self.__fake_run:
+            os.remove(f_file)
+
+    def symlink(self, src, dest):
+        if not self.__fake_run:
+            os.symlink(src, dest)
+    def rename(self, src, dest):
+        if not self.__fake_run:
+            os.rename(src, dest)
+
     def clean_repo(self):
         """
         Clean repo by deleting all symlinks.
@@ -57,16 +68,13 @@ class RPMRepManager:
                 o_rpm = RPMPackage(ff_rpm)
                 if self.__wipe_repo:
                     self.__report_cleanup.add_action(f_rpm)
-                    if not self.__fake_run:
-                        os.remove(ff_rpm)
+                    self.remove(ff_rpm)
                 elif not (self.__take_unsigned or o_rpm.get("signed")):
                     self.__report_cleanup.add_action(f_rpm)
-                    if not self.__fake_run:
-                        os.remove(ff_rpm)
+                    self.remove(ff_rpm)
             except OSError:
                 self.__report_cleanup.add_action(f_rpm)
-                if not self.__fake_run:
-                    os.remove(ff_rpm)
+                self.remove(ff_rpm)
             except:
                 pass
     
@@ -87,9 +95,8 @@ class RPMRepManager:
             if RPMInfo.isa_rpm(ff_rpm):
                 o_rpm = RPMPackage(ff_rpm)
                 dest = self.__rpmdir + o_rpm.get("arch") + '/' + f_rpm
-                if not self.__fake_run:
-                    os.rename(ff_rpm, dest)
-                    os.symlink(dest, ff_rpm)
+                self.rename(ff_rpm, dest)
+                self.symlink(dest, ff_rpm)
                 self.__report_other.add_action(ff_rpm)
 
     @staticmethod
@@ -174,8 +181,7 @@ class RPMRepManager:
         for i in rpm_del_list:
             self.__report_deldup.add_action(i.get("bname") +
                     " (signed: " + str(i.get("signed")) + ")")
-            if not self.__fake_run:
-                os.remove(i.get("fname"))
+            self.remove(i.get("fname"))
 
         return l_rpms
 
@@ -191,9 +197,8 @@ class RPMRepManager:
             src = self.__link_relative + self.__version + '/' + arch + '/' + name
 
             if not os.path.exists(name):
-                if not self.__fake_run:
-                    os.symlink(src, name)
                 self.__report_link.add_action(name)
+                self.symlink(src, name)
     
     def build_repo(self):
         """
