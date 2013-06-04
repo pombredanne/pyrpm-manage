@@ -130,7 +130,8 @@ class RPMRepManager:
         o_rpm_del = None
         dict_ = dict((k, v) for k, v in h_rpms.iteritems() if len(v) > 1)
 
-        for k, v in dict_:
+        for k in dict_:
+            v = dict_[k]
             o_rpm = v[0]
             print("\n * " + k)
             for i in v[1:]:
