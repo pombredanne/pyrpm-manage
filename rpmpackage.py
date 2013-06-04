@@ -24,10 +24,12 @@ class RPMPackage:
         """
         self.__infos["fname"]	= f_rpm
         self.__infos["bname"]	= os.path.basename(f_rpm)
-        self.__infos["name"]	= self.get_info(rpm.RPMTAG_NAME, None)
-        self.__infos["version"]	= self.get_info(rpm.RPMTAG_VERSION, None)
-        self.__infos["epoch"]	= self.get_info(rpm.RPMTAG_EPOCH, None)
-        self.__infos["arch"]	= self.get_info(rpm.RPMTAG_ARCH, None)
+        self.__infos["headers"] = RPMInfo.get_headers(f_rpm)
+        self.get_info(rpm.RPMTAG_NAME, "name")
+        self.get_info(rpm.RPMTAG_VERSION, "version")
+        self.get_info(rpm.RPMTAG_EPOCH, "epoch")
+        self.get_info(rpm.RPMTAG_ARCH, "arch")
+
         match = RE_TRUE_RELEASE.match(self.get_info(rpm.RPMTAG_RELEASE, None))
         self.__infos["release"]	= match.group(1)
         try:
@@ -46,13 +48,15 @@ class RPMPackage:
 
         return self.get_info(tag, None)
 
-    def get_info(self, tag, cache_name):
+    def get_info(self, rpmtag, cache_name):
         """
         Can make a [cache_name] key entry in cached datas.
         Custom cached datas cannot be updated via update_cache.
+
+        Tag must be rpm.RPMTAG
         """
-        info = RPMInfo.get_info(self.get("fname"), tag)
-        if cache_name != None:
+        info = self.__infos["headers"][rpmtag]
+        if cache_name:
             self.__infos[cache_name] = info
         return info
 

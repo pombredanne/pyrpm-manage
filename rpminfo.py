@@ -19,31 +19,27 @@ class RPMInfo:
         return False
 
     @staticmethod
-    def get_info(f_rpm, tag):
+    def get_headers(f_rpm):
         """
-        Give info of file [f_rpm] and tag [rpm.TAG*]
+        Give info of file [f_rpm] and tags [[rpm.TAG*]]
         """
         transaction = rpm.ts()
         fdno = os.open(f_rpm, os.O_RDONLY)
 
-        res = None
-        hdr = None
+        res = {}
+        headers = None
 
         try:
-            hdr = transaction.hdrFromFdno(fdno)
+            headers = transaction.hdrFromFdno(fdno)
         except:
+            os.close(fdno)
             try:
                 rpm.delSign(f_rpm)
             except:
                 os.system('rpmsign --delsign ' + f_rpm + ' 2>/dev/null')
             fdno = os.open(f_rpm, os.O_RDONLY)
-            hdr = transaction.hdrFromFdno(fdno)
+            headers = transaction.hdrFromFdno(fdno)
         finally:
-            try:
-                res = hdr[tag]
-                os.close(fdno)
-            except:
-                pass
-
-        return res
+            return headers
+            os.close(fdno)
 
