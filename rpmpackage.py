@@ -69,8 +69,14 @@ class RPMPackage:
 
 
     def is_latest(self, o_rpmpackage):
-        myv_s = self.get('version') + '-' + self.get('release') + '-' + self.get('epoch')
-        ov_s = o_rpmpackage.get('version') + '-' + o_rpmpackage.get('release') + '-' + self.get('epoch')
+        myv_s = self.get('version') + '-' + self.get('release')
+        ov_s = o_rpmpackage.get('version') + '-' + o_rpmpackage.get('release')
+        try:
+            myv_s += '-' + self.get('epoch')
+            ov_s +=  '-' + o_rpmpackage.get('epoch')
+        except TypeError:
+            pass
+
         if LooseVersion(myv_s) == LooseVersion(ov_s) and self.get('arch') != o_rpmpackage.get('arch'):
             return -1
         return LooseVersion(myv_s) > LooseVersion(ov_s)
