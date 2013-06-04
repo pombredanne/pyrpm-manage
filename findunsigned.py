@@ -12,7 +12,6 @@ def main():
     parser.add_option('--base', dest='base', help='base dir for everything')
     parser.add_option('--version', dest='version', help='version of distro')
     parser.add_option('--arch', dest='arch', help='architecture')
-    parser.add_option('--oneline', action='store_true', help='display in one line, to use directly with rpmsign for example')
     (options, args) = parser.parse_args()
 
     if not options.base:
@@ -35,15 +34,12 @@ def main():
             False,
             False
             )
-    list = []
+    rpmlist = []
     for arch in [options.arch, 'noarch']:
-        list += rep.list_rpms([options.base + '/' + options.version + '/' + arch])
-    signed, unsigned = rep.sort_signed(list)
+        rpmlist += rep.list_rpms([options.base + '/' + options.version + '/' + arch])
+    signed, unsigned = rep.sort_signed(rpmlist)
     for u in unsigned:
-        if options.oneline:
-            sys.stdout.write(u.get("fname") + ' ')
-        else:
-            sys.stdout.write(u.get("fname") + '\n')
+        sys.stdout.write(u.get("fname") + '\n')
     sys.stdout.flush()
 
 if __name__ == '__main__':
