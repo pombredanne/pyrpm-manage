@@ -145,11 +145,11 @@ class RPMRepManager:
                         o_rpm_del = i
 
                     if o_rpm_del != None:
-                        print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")	 + " signed: " + str(o_rpm_del.get("signed")) + c.NC)
+                        print("\t" + c.RED + " + delete " + o_rpm_del.get("bname")	 + " signed: " + str(o_rpm_del.get("signed")) + c.NC)
                         l_rpms.remove(o_rpm_del)
                         rpm_del_list.append(o_rpm_del)
 
-                print("\t" + c.GREEN + " +        take " + o_rpm.get("bname") + " signed: " + str(o_rpm.get("signed")) + c.NC)
+                print("\t" + c.GREEN + " +   take " + o_rpm.get("bname") + " signed: " + str(o_rpm.get("signed")) + c.NC)
         return l_rpms, rpm_del_list
 
     def delete_duplicates(self, l_rpms):
