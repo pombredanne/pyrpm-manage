@@ -47,25 +47,26 @@ class RPMRepManager:
         os.chdir(repo) # if not done, relative symlinks will never be valid.
     
         for f_rpm in os.listdir(repo):
+            ff_rpm = repo + f_rpm
             try:
                 if not '.rpm' in f_rpm[-4:]:
                     raise Exception()
-                if not os.path.islink(repo + f_rpm):
-                    raise Exception(repo + f_rpm + " is not a symlink")
+                if not os.path.islink(ff_rpm):
+                    raise Exception(ff_rpm + " is not a symlink")
 
-                o_rpm = RPMPackage(repo + f_rpm)
+                o_rpm = RPMPackage(ff_rpm)
                 if self.__wipe_repo:
                     self.__report_cleanup.add_action(f_rpm)
                     if not self.__fake_run:
-                        os.remove(repo + f_rpm)
+                        os.remove(ff_rpm)
                 elif not (self.__take_unsigned or o_rpm.get("signed")):
                     self.__report_cleanup.add_action(f_rpm)
                     if not self.__fake_run:
-                        os.remove(repo + f_rpm)
+                        os.remove(ff_rpm)
             except OSError:
                 self.__report_cleanup.add_action(f_rpm)
                 if not self.__fake_run:
-                    os.remove(repo + f_rpm)
+                    os.remove(ff_rpm)
             except:
                 pass
     
@@ -82,13 +83,14 @@ class RPMRepManager:
         list_f = os.listdir(dir_)
 
         for f_rpm in list_f:
-            if RPMInfo.isa_rpm(dir_ + f_rpm):
-                o_rpm = RPMPackage(dir_ + f_rpm)
+            ff_rpm = dir_ + f_rpm
+            if RPMInfo.isa_rpm(ff_rpm):
+                o_rpm = RPMPackage(ff_rpm)
                 dest = self.__rpmdir + o_rpm.get("arch") + '/' + f_rpm
                 if not self.__fake_run:
-                    os.rename(dir_ + f_rpm, dest)
-                    os.symlink(dest, dir_ + f_rpm)
-                self.__report_other.add_action(dir_ + f_rpm)
+                    os.rename(ff_rpm, dest)
+                    os.symlink(dest, ff_rpm)
+                self.__report_other.add_action(ff_rpm)
 
     @staticmethod
     def list_rpms(dirs):
@@ -97,13 +99,11 @@ class RPMRepManager:
         """
         rpms = []
         for dir_ in dirs:
-            if dir_[-1:] != '/':
-                dir_ += '/'
-
             list_f = os.listdir(dir_)
             for f_rpm in list_f:
-                if RPMInfo.isa_rpm(dir_ + f_rpm):
-                    rpms.append(RPMPackage(dir_ + f_rpm))
+                ff_rpm = dir_ + '/' + f_rpm
+                if RPMInfo.isa_rpm(ff_rpm):
+                    rpms.append(RPMPackage(ff_rpm))
 
         return rpms
 
@@ -132,8 +132,7 @@ class RPMRepManager:
         o_rpm_del = None
         h_rpms_ = dict((k, v) for k, v in h_rpms.iteritems() if len(v) > 1)
 
-        for k in h_rpms_:
-            v = h_rpms_[k]
+        for k, v in h_rpms_.items():
             o_rpm = v[0]
             print("\n * " + k)
             for i in v[1:]:
