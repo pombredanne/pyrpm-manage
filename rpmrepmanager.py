@@ -134,14 +134,15 @@ class RPMRepManager:
                 print(" * " + k)
                 for i in h_rpms[k][1:]:
                     res = o_rpm.is_latest(i)
-                    if res == 0:
-                        o_rpm_del = o_rpm
-                        o_rpm = i
-                    elif res == 1:
-                        o_rpm_del = i
-                    else:
+                    if res == -1:
                         print("\t" + c.BLUE + " + what to do with " + i.get("bname") + " ?" + c.NC)
                         o_rpm_del = None
+
+                    elif not res:
+                        o_rpm_del = o_rpm
+                        o_rpm = i
+                    elif res:
+                        o_rpm_del = i
 
                     if o_rpm_del != None:
                         print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")	 + " signed: " + str(o_rpm_del.is_signed()) + c.NC)
