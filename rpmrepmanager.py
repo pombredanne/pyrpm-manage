@@ -58,7 +58,7 @@ class RPMRepManager:
                     self.__report_cleanup.add_action(f_rpm)
                     if not self.__fake_run:
                         os.remove(repo + f_rpm)
-                elif not (self.__take_unsigned or o_rpm.is_signed()):
+                elif not (self.__take_unsigned or o_rpm.get("signed")):
                     self.__report_cleanup.add_action(f_rpm)
                     if not self.__fake_run:
                         os.remove(repo + f_rpm)
@@ -114,7 +114,7 @@ class RPMRepManager:
         unsigned = []
 
         for o_rpm in rpms:
-            if o_rpm.is_signed():
+            if o_rpm.get("signed"):
                 signed.append(o_rpm)
             else:
                 unsigned.append(o_rpm)
@@ -145,11 +145,11 @@ class RPMRepManager:
                         o_rpm_del = i
 
                     if o_rpm_del != None:
-                        print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")	 + " signed: " + str(o_rpm_del.is_signed()) + c.NC)
+                        print("\t" + c.RED + " + will delete " + o_rpm_del.get("bname")	 + " signed: " + str(o_rpm_del.get("signed")) + c.NC)
                         l_rpms.remove(o_rpm_del)
                         rpm_del_list.append(o_rpm_del)
 
-                print("\t" + c.GREEN + " +        take " + o_rpm.get("bname") + " signed: " + str(o_rpm.is_signed()) + c.NC)
+                print("\t" + c.GREEN + " +        take " + o_rpm.get("bname") + " signed: " + str(o_rpm.get("signed")) + c.NC)
         return l_rpms, rpm_del_list
 
     def delete_duplicates(self, l_rpms):
@@ -158,7 +158,7 @@ class RPMRepManager:
         """
         h_rpms = {}
         for o_rpm in l_rpms:
-            if self.__force_delete or not o_rpm.is_signed():
+            if self.__force_delete or not o_rpm.get("signed"):
                 try:
                     h_rpms[o_rpm.get("name")].append(o_rpm)
                 except KeyError:
@@ -166,7 +166,7 @@ class RPMRepManager:
 
         l_rpms, rpm_del_list = RPMRepManager.__get_del_list(l_rpms, h_rpms)
         for i in rpm_del_list:
-            self.__report_deldup.add_action(i.get("bname") + " (signed: " + str(i.is_signed()) + ")")
+            self.__report_deldup.add_action(i.get("bname") + " (signed: " + str(i.get("signed")) + ")")
             if not self.__fake_run:
                 os.remove(i.get("fname"))
 
