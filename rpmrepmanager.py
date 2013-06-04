@@ -127,17 +127,16 @@ class RPMRepManager:
         Make the list of RPMS to delete.
         """
         rpm_del_list = []
+        o_rpm_del = None
         for k in h_rpms:
             if len(h_rpms[k]) > 1:
                 o_rpm = h_rpms[k][0]
-                o_rpm_del = None
-                print(" * " + k)
+                print("\n * " + k)
                 for i in h_rpms[k][1:]:
                     res = o_rpm.is_latest(i)
                     if res == -1:
                         print("\t" + c.BLUE + " + what to do with " + i.get("bname") + " ?" + c.NC)
                         o_rpm_del = None
-
                     elif not res:
                         o_rpm_del = o_rpm
                         o_rpm = i
@@ -145,11 +144,14 @@ class RPMRepManager:
                         o_rpm_del = i
 
                     if o_rpm_del != None:
-                        print("\t" + c.RED + " + delete " + o_rpm_del.get("bname")	 + " signed: " + str(o_rpm_del.get("signed")) + c.NC)
+                        print("\t" + c.RED + " + delete " + o_rpm_del.get("bname")
+                                + " signed: " + str(o_rpm_del.get("signed")) + c.NC)
                         l_rpms.remove(o_rpm_del)
                         rpm_del_list.append(o_rpm_del)
 
-                print("\t" + c.GREEN + " +   take " + o_rpm.get("bname") + " signed: " + str(o_rpm.get("signed")) + c.NC)
+                print("\t" + c.GREEN + " +   take " + o_rpm.get("bname")
+                        + " signed: " + str(o_rpm.get("signed")) + c.NC)
+
         return l_rpms, rpm_del_list
 
     def delete_duplicates(self, l_rpms):
