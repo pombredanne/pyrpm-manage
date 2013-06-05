@@ -7,7 +7,7 @@ http://projet.beastie.eu/?p=pyrpm-manage.git;a=summary
 
 How to use ?
 
-/home/rpmuser/rpm											<-- base dir
+/home/rpmuser/rpm   <-- base dir
 
 Where we have RPMs:
 base
@@ -22,10 +22,10 @@ Where we have repositories:
 base
     www/RHEL6-x86_64/RPMS.racdevel			<-- repository's root/name
 
-Have a look in __init__, for __www and __link_relative
+Have a look in __init__, for __www and __link_relative in rpmrepmanager.py
 
 Use example for previous tree:
-./remake-repo.py --base /home/rpmuser/rpm/ --version RHEL6 --arch x86_64 --repo RPMS.racdevel --real --unsigned
+./buildrpmrepo.py --base /home/rpmuser/rpm/ --version RHEL6 --arch x86_64 --repo RPMS.racdevel --real --unsigned
 """
 
 import optparse
