@@ -206,7 +206,7 @@ class RPMRepManager:
         """
         os.chdir(self.__repo)
         if not self.__fake_run:
-            os.system('createrepo .')
+            os.system('createrepo --update .')
 
     def run(self):
         """
