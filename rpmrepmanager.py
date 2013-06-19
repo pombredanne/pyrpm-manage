@@ -131,8 +131,7 @@ class RPMRepManager:
 
         return signed, unsigned
 
-    @staticmethod
-    def __get_del_list(l_rpms, h_rpms):
+    def __get_del_list(self, l_rpms, h_rpms):
         """
         Make the list of RPMS to delete.
         """
@@ -143,6 +142,9 @@ class RPMRepManager:
         h_rpms_ = dict((k, v) for k, v in h_rpms.iteritems() if len(v) > 1)
 
         for k, v in h_rpms_.items():
+            o_rpms_signed = []
+            o_rpms_unsigned = []
+
             for i in v:
                 if i.get('signed'):
                     o_rpms_signed.append(i)
@@ -189,7 +191,7 @@ class RPMRepManager:
                 except KeyError:
                     h_rpms[o_rpm.get("name")] = [o_rpm]
 
-        l_rpms, rpm_del_list = RPMRepManager.__get_del_list(l_rpms, h_rpms)
+        l_rpms, rpm_del_list = self.__get_del_list(l_rpms, h_rpms)
         for i in rpm_del_list:
             self.__report_deldup.add_action(i.get("bname") +
                     " (signed: " + str(i.get("signed")) + ")")
