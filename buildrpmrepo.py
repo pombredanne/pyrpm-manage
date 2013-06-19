@@ -66,7 +66,7 @@ def main():
     if options.force_delete and not options.cleanup:
         parser.error('Cannot force deletion if you dont want to --cleanup')
     if options.wipe_all_old and not options.force_delete:
-        parser.errer('Cannot wipe all old if not --force-delete'
+        parser.error('Cannot wipe all old if not --force-delete')
     
     if options.verbose and options.report:
         parser.error('Cannot be verbose and make report.')
@@ -75,22 +75,28 @@ def main():
     print("=> Options: ")
     if options.unsigned:
         print("   * Take unsigned packages")
+
     if options.force_delete:
         print("   * Force deletion of old signed packages")
+
     if options.wipe_repo:
         print("   * Wipe repository before linking")
+    else:
+        print("   * Keep valid symlinks")
+
     if options.wipe_all_old:
         print("   * Delete all old packages even if signed")
     else:
         print("   * Keep latest signed and unsigned packages")
-    else:
-        print("   * Keep valid symlinks")
+
     if options.fake:
         print("   * Fake mode")
     else:
         print("   * Real mode")
+
     if options.report:
         print("   * Print report at the end")
+
     if options.verbose:
         print("   * Verbose mode")
 
@@ -106,7 +112,7 @@ def main():
             options.report,
             options.force_delete,
             options.wipe_repo,
-            options.keep_all_latest
+            options.wipe_all_old
             )
     rep.run()
     
