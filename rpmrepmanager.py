@@ -154,6 +154,10 @@ class RPMRepManager:
             print("\n * " + k)
 
             vv = [o_rpms_signed, o_rpms_unsigned] if self.__keep_all_latest else [o_rpms_signed + o_rpms_unsigned]
+
+            if len(vv[0] < 1):
+                vv = vv[1:]
+
             for v in vv:
                 o_rpm = v[0]
                 for i in v[1:]:
