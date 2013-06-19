@@ -147,7 +147,6 @@ class RPMRepManager:
             if self.__keep_all_latest:
                 for i in v:
                     if i.get("signed"):
-                        print("signed :" + i.get("name"))
                         o_rpms_signed.append(i)
                     else:
                         o_rpms_unsigned.append(i)
