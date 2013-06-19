@@ -155,7 +155,7 @@ class RPMRepManager:
 
             vv = [o_rpms_signed, o_rpms_unsigned] if self.__keep_all_latest else [o_rpms_signed + o_rpms_unsigned]
 
-            if len(vv[0] < 1):
+            if len(vv[0]) < 1:
                 vv = vv[1:]
 
             for v in vv:
