@@ -46,6 +46,7 @@ def main():
     parser.add_option('--cleanup', action='store_true', help='clean old versions/release of a package. dont touch signed packages unless --force-delete')
     parser.add_option('--force-delete', action='store_true', help='force deletion of old packages, event if signed. use with CAUTION.')
     parser.add_option('--wipe-repo', action='store_true', help='wipe repository instead of just remake missing/invalid symlinks to RPM')
+    parser.add_option('--keep-all-latest', action='store_true', help='keep both latest unsigned and signed package as default is to delete all oldest')
     (options, args) = parser.parse_args()
 
     if not options.base:
@@ -71,21 +72,23 @@ def main():
     print("=> Working on repo " + options.repo + " for " + options.version + " on arch " + options.arch)
     print("=> Options: ")
     if options.unsigned:
-        print("	  * Take unsigned packages")
+        print("   * Take unsigned packages")
     if options.force_delete:
-        print("	  * Force deletion of old signed packages")
+        print("   * Force deletion of old signed packages")
     if options.wipe_repo:
-        print("	  * Wipe repository before linking")
+        print("   * Wipe repository before linking")
+    if options.keep_all_latest:
+        print("   * Keep both signed and unsigned latest")
     else:
-        print("	  * Keep valid symlinks")
+        print("   * Keep valid symlinks")
     if options.fake:
-        print("	  * Fake mode")
+        print("   * Fake mode")
     else:
-        print("	  * Real mode")
+        print("   * Real mode")
     if options.report:
-        print("	  * Print report at the end")
+        print("   * Print report at the end")
     if options.verbose:
-        print("	  * Verbose mode")
+        print("   * Verbose mode")
 
     rep = RPMRepManager(
             options.base,
@@ -98,7 +101,8 @@ def main():
             options.verbose,
             options.report,
             options.force_delete,
-            options.wipe_repo
+            options.wipe_repo,
+            options.keep_all_latest
             )
     rep.run()
     

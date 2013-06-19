@@ -12,7 +12,7 @@ class RPMRepManager:
     """
     Manage RPM repository.
     """
-    def __init__(self, base, version, arch, repo, fake, cleanup, unsigned, verbose, report, force_delete, wipe_repo):
+    def __init__(self, base, version, arch, repo, fake, cleanup, unsigned, verbose, report, force_delete, wipe_repo, keep_all_latest):
         if not '/' in base[-1:]:
             base += '/'
         if not '/' in repo[-1:]:
@@ -32,6 +32,7 @@ class RPMRepManager:
         self.__report			= True if report else False
         self.__force_delete		= True if force_delete else False
         self.__wipe_repo		= True if wipe_repo else False
+        self.__keep_all_latest  = True if keep_all_latest else False
 
         self.__report_link = Report("link", "linked", self.__verbose, True)
         self.__report_cleanup = Report("cleanup", "removed symlink", self.__verbose, True)
@@ -137,31 +138,42 @@ class RPMRepManager:
         """
         rpm_del_list = []
         o_rpm_del = None
+        o_rpms_signed = []
+        o_rpms_unsigned = []
         h_rpms_ = dict((k, v) for k, v in h_rpms.iteritems() if len(v) > 1)
 
         for k, v in h_rpms_.items():
-            o_rpm = v[0]
+            for i in v:
+                if i.get('signed'):
+                    o_rpms_signed.append(i)
+                else:
+                    o_rpms_unsigned.append(i)
+
             print("\n * " + k)
-            for i in v[1:]:
-                res = o_rpm.is_latest(i)
-                if res == -1:
-                    print("\t" + c.BLUE + " + what to do with " + i.get("bname")
-                            + " ?" + c.NC)
-                    o_rpm_del = None
-                elif not res:
-                    o_rpm_del = o_rpm
-                    o_rpm = i
-                elif res:
-                    o_rpm_del = i
 
-                if o_rpm_del != None:
-                    print("\t" + c.RED + " + delete " + o_rpm_del.get("bname")
-                            + " signed: " + str(o_rpm_del.get("signed")) + c.NC)
-                    l_rpms.remove(o_rpm_del)
-                    rpm_del_list.append(o_rpm_del)
+            vv = [o_rpms_signed, o_rpms_unsigned] if self.__keep_all_latest else [o_rpms_signed + o_rpms_unsigned]
+            for v in vv:
+                o_rpm = v[0]
+                for i in v[1:]:
+                    res = o_rpm.is_latest(i)
+                    if res == -1:
+                        print("\t" + c.BLUE + " + what to do with " + i.get("bname")
+                                + " ?" + c.NC)
+                        o_rpm_del = None
+                    elif not res:
+                        o_rpm_del = o_rpm
+                        o_rpm = i
+                    elif res:
+                        o_rpm_del = i
 
-            print("\t" + c.GREEN + " +   take " + o_rpm.get("bname")
-                    + " signed: " + str(o_rpm.get("signed")) + c.NC)
+                    if o_rpm_del:
+                        print("\t" + c.RED + " + delete " + o_rpm_del.get("bname")
+                                + " signed: " + str(o_rpm_del.get("signed")) + c.NC)
+                        l_rpms.remove(o_rpm_del)
+                        rpm_del_list.append(o_rpm_del)
+
+                print("\t" + c.GREEN + " +   take " + o_rpm.get("bname")
+                     + " signed: " + str(o_rpm.get("signed")) + c.NC)
 
         return l_rpms, rpm_del_list
 
