@@ -12,7 +12,7 @@ class RPMRepManager:
     """
     Manage RPM repository.
     """
-    def __init__(self, base, version, arch, repo, fake, cleanup, unsigned, verbose, report, force_delete, wipe_repo, keep_all_latest):
+    def __init__(self, base, version, arch, repo, fake, cleanup, unsigned, verbose, report, force_delete, wipe_repo, wipe_all_old):
         if not '/' in base[-1:]:
             base += '/'
         if not '/' in repo[-1:]:
@@ -32,7 +32,7 @@ class RPMRepManager:
         self.__report			= True if report else False
         self.__force_delete		= True if force_delete else False
         self.__wipe_repo		= True if wipe_repo else False
-        self.__keep_all_latest  = True if keep_all_latest else False
+        self.__wipe_all_old     = True if wipe_all_old else False
 
         self.__report_link = Report("link", "linked", self.__verbose, True)
         self.__report_cleanup = Report("cleanup", "removed symlink", self.__verbose, True)
@@ -144,7 +144,7 @@ class RPMRepManager:
             o_rpms_unsigned = []
             vv = []
 
-            if self.__keep_all_latest:
+            if not self.__wipe_all_old:
                 for i in v:
                     if i.get("signed"):
                         o_rpms_signed.append(i)

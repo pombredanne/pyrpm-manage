@@ -46,7 +46,7 @@ def main():
     parser.add_option('--cleanup', action='store_true', help='clean old versions/release of a package. dont touch signed packages unless --force-delete')
     parser.add_option('--force-delete', action='store_true', help='force deletion of old packages, event if signed. use with CAUTION.')
     parser.add_option('--wipe-repo', action='store_true', help='wipe repository instead of just remake missing/invalid symlinks to RPM')
-    parser.add_option('--keep-all-latest', action='store_true', help='keep both latest unsigned and signed package as default is to delete all oldest. useful with --force-delete')
+    parser.add_option('--wipe-all-old', action='store_true', help='default is to keep both latest unsigned and signed package. This option forces to delete all old packages. useful with --force-delete')
     (options, args) = parser.parse_args()
 
     if not options.base:
@@ -65,6 +65,8 @@ def main():
 
     if options.force_delete and not options.cleanup:
         parser.error('Cannot force deletion if you dont want to --cleanup')
+    if options.wipe_all_old and not options.force_delete:
+        parser.errer('Cannot wipe all old if not --force-delete'
     
     if options.verbose and options.report:
         parser.error('Cannot be verbose and make report.')
@@ -77,8 +79,10 @@ def main():
         print("   * Force deletion of old signed packages")
     if options.wipe_repo:
         print("   * Wipe repository before linking")
-    if options.keep_all_latest:
-        print("   * Keep both signed and unsigned latest")
+    if options.wipe_all_old:
+        print("   * Delete all old packages even if signed")
+    else:
+        print("   * Keep latest signed and unsigned packages")
     else:
         print("   * Keep valid symlinks")
     if options.fake:
