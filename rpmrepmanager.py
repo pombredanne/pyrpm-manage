@@ -137,26 +137,28 @@ class RPMRepManager:
         """
         rpm_del_list = []
         o_rpm_del = None
-        o_rpms_signed = []
-        o_rpms_unsigned = []
         h_rpms_ = dict((k, v) for k, v in h_rpms.iteritems() if len(v) > 1)
 
         for k, v in h_rpms_.items():
             o_rpms_signed = []
             o_rpms_unsigned = []
+            vv = []
 
-            for i in v:
-                if i.get('signed'):
-                    o_rpms_signed.append(i)
-                else:
-                    o_rpms_unsigned.append(i)
+            if self.__keep_all_latest:
+                for i in v:
+                    if i.get("signed"):
+                        print("signed :" + i.get("name"))
+                        o_rpms_signed.append(i)
+                    else:
+                        o_rpms_unsigned.append(i)
+
+                if len(o_rpms_signed) > 0:
+                    vv.append(o_rpms_signed)
+                vv.append(o_rpms_unsigned)
+            else:
+                vv = [v]
 
             print("\n * " + k)
-
-            vv = [o_rpms_signed, o_rpms_unsigned] if self.__keep_all_latest else [o_rpms_signed + o_rpms_unsigned]
-
-            if len(vv[0]) < 1:
-                vv = vv[1:]
 
             for v in vv:
                 o_rpm = v[0]

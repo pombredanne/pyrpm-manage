@@ -46,7 +46,7 @@ def main():
     parser.add_option('--cleanup', action='store_true', help='clean old versions/release of a package. dont touch signed packages unless --force-delete')
     parser.add_option('--force-delete', action='store_true', help='force deletion of old packages, event if signed. use with CAUTION.')
     parser.add_option('--wipe-repo', action='store_true', help='wipe repository instead of just remake missing/invalid symlinks to RPM')
-    parser.add_option('--keep-all-latest', action='store_true', help='keep both latest unsigned and signed package as default is to delete all oldest')
+    parser.add_option('--keep-all-latest', action='store_true', help='keep both latest unsigned and signed package as default is to delete all oldest. useful with --force-delete')
     (options, args) = parser.parse_args()
 
     if not options.base:
