@@ -12,7 +12,9 @@ class RPMRepManager:
     """
     Manage RPM repository.
     """
-    def __init__(self, base, version, arch, repo, fake, cleanup, unsigned, verbose, report, force_delete, wipe_repo, wipe_all_old):
+    def __init__(self, options):
+        base = options.base
+        repo = options.repo
         if not '/' in base[-1:]:
             base += '/'
         if not '/' in repo[-1:]:
@@ -21,18 +23,18 @@ class RPMRepManager:
         self.__link_relative = '../../../'
         self.__www		= 'www/'
         self.__base		= base
-        self.__version	= version
-        self.__arch		= arch
-        self.__repo		= base + self.__www + version + '-' + arch + '/' + repo
-        self.__rpmdir	= base + version + '/'
-        self.__fake_run			= True if fake else False
-        self.__take_unsigned	= True if unsigned else False
-        self.__cleanup			= True if cleanup else False
-        self.__verbose			= True if verbose else False
-        self.__report			= True if report else False
-        self.__force_delete		= True if force_delete else False
-        self.__wipe_repo		= True if wipe_repo else False
-        self.__wipe_all_old     = True if wipe_all_old else False
+        self.__version	= options.version
+        self.__arch		= options.arch
+        self.__repo		= base + self.__www + options.version + '-' + options.arch + '/' + repo
+        self.__rpmdir	= base + options.version + '/'
+        self.__fake_run			= True if options.fake else False
+        self.__take_unsigned	= True if options.unsigned else False
+        self.__cleanup			= True if options.cleanup else False
+        self.__verbose			= True if options.verbose else False
+        self.__report			= True if options.report else False
+        self.__force_delete		= True if options.force_delete else False
+        self.__wipe_repo		= True if options.wipe_repo else False
+        self.__wipe_all_old     = True if options.wipe_all_old else False
 
         self.__report_link = Report("link", "linked", self.__verbose, True)
         self.__report_cleanup = Report("cleanup", "removed symlink", self.__verbose, True)

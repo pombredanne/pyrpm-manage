@@ -100,20 +100,7 @@ def main():
     if options.verbose:
         print("   * Verbose mode")
 
-    rep = RPMRepManager(
-            options.base,
-            options.version,
-            options.arch,
-            options.repo,
-            options.fake,
-            options.cleanup,
-            options.unsigned,
-            options.verbose,
-            options.report,
-            options.force_delete,
-            options.wipe_repo,
-            options.wipe_all_old
-            )
+    rep = RPMRepManager(options)
     rep.run()
     
     if options.fake:
