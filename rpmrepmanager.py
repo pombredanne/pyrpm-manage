@@ -278,7 +278,7 @@ class RPMRepManager:
             self.__report_other.print_report()
 
     @staticmethod
-    def parse_options():
+    def MakeNeededOptions():
         parser = optparse.OptionParser()
         parser.add_option('--base', dest='base', help='base dir for everything')
         parser.add_option('--version', dest='version', help='version of distro')
@@ -293,5 +293,4 @@ class RPMRepManager:
         parser.add_option('--force-delete', action='store_true', default=False, help='force deletion of old packages, event if signed. use with CAUTION.')
         parser.add_option('--wipe-repo', action='store_true', default=False, help='wipe repository instead of just remake missing/invalid symlinks to RPM')
         parser.add_option('--wipe-all-old', action='store_true', default=False, help='default is to keep both latest unsigned and signed package. This option forces to delete all old packages. useful with --force-delete')
-        (options, args) = parser.parse_args()
-        return options, args, parser
+        return parser
