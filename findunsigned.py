@@ -21,19 +21,7 @@ def main():
     if not options.arch:
         parser.error('No arch given')
 
-    rep = RPMRepManager(
-            options.base,
-            options.version,
-            options.arch,
-            "",
-            False,
-            False,
-            True,
-            True,
-            False,
-            False,
-            False
-            )
+    rep = RPMRepManager(options)
     rpmlist = []
     for arch in [options.arch, 'noarch']:
         rpmlist += rep.list_rpms([options.base + '/' + options.version + '/' + arch])
