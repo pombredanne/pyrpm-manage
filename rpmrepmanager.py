@@ -13,12 +13,8 @@ class RPMRepManager:
     Manage RPM repository.
     """
     def __init__(self, options):
-        repo = ""
+        repo = options.repo
         base = options.base
-        try:
-            repo = options.repo
-        except AttributeError:
-            pass
 
         if not '/' in base[-1:]:
             base += '/'
