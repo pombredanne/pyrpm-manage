@@ -22,21 +22,21 @@ class RPMRepManager:
         if not '/' in repo[-1:]:
             repo += '/'
 
+        self.__www     = 'www/'
+        self.__base    = base
+        self.__version = options.version
+        self.__arch    = options.arch
+        self.__repo    = base + self.__www + options.version + '-' + options.arch + '/' + repo
+        self.__rpmdir  = base + options.version + '/'
         self.__link_relative = '../../../'
-        self.__www		= 'www/'
-        self.__base		= base
-        self.__version	= options.version
-        self.__arch		= options.arch
-        self.__repo		= base + self.__www + options.version + '-' + options.arch + '/' + repo
-        self.__rpmdir	= base + options.version + '/'
-        self.__fake_run			= True if options.fake else False
-        self.__take_unsigned	= True if options.unsigned else False
-        self.__cleanup			= True if options.cleanup else False
-        self.__verbose			= True if options.verbose else False
-        self.__report			= True if options.report else False
-        self.__force_delete		= True if options.force_delete else False
-        self.__wipe_repo		= True if options.wipe_repo else False
-        self.__wipe_all_old     = True if options.wipe_all_old else False
+        self.__fake_run      = True if options.fake else False
+        self.__take_unsigned = True if options.unsigned else False
+        self.__cleanup       = True if options.cleanup else False
+        self.__verbose       = True if options.verbose else False
+        self.__report        = True if options.report else False
+        self.__force_delete  = True if options.force_delete else False
+        self.__wipe_repo     = True if options.wipe_repo else False
+        self.__wipe_all_old  = True if options.wipe_all_old else False
 
         self.__report_link = Report("link", "linked", self.__verbose, True)
         self.__report_cleanup = Report("cleanup", "removed symlink", self.__verbose, True)
