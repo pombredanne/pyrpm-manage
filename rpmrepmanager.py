@@ -317,7 +317,7 @@ class RPMRepManager:
 
         parser.add_option('--force-delete', action='store_true',
                 default=False,
-                help='force deletion of old packages only, event if signed (but old)')
+                help='force deletion of old packages even if signed (but old)')
 
         parser.add_option('--wipe-repo', action='store_true',
                 default=False,
