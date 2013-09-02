@@ -33,7 +33,8 @@ from rpmrepmanager import RPMRepManager
 from colors import Colors as c
 
 def main():
-    options, args, parser = RPMRepManager.parse_options()
+    parser = RPMRepManager.MakeNeededOptions()
+    (options, args) = parser.parse_args()
     if not options.base:
         parser.error('No base given')
     if not options.version:

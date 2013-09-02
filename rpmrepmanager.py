@@ -278,7 +278,7 @@ class RPMRepManager:
             self.__report_other.print_report()
 
     @staticmethod
-    def parse_options():
+    def MakeNeededOptions():
         parser = optparse.OptionParser()
         parser.add_option('--base', dest='base',
                 help='base dir for everything')
