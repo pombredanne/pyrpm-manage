@@ -284,7 +284,7 @@ class RPMRepManager:
                 help='base dir for everything')
         parser.add_option('--version', dest='version',
                 help='version of distro')
-        parser.add_option('--arch', dest='arch', action='append',
+        parser.add_option('--arch', dest='arch',
                 help='architecture', default='noarch')
 
         parser.add_option('--repo', dest='repo',
