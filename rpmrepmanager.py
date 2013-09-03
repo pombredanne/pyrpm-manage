@@ -295,11 +295,9 @@ class RPMRepManager:
                 help='name of the repository under base/www/version-arch/')
 
         parser.add_option('--fake', action='store_true',
-                default=True,
                 help='run in fake mode, no action performed. this is default mode.')
 
         parser.add_option('--real', action='store_true',
-                default=False,
                 help='run in real mode')
 
         parser.add_option('--unsigned', action='store_true',
