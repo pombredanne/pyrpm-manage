@@ -227,8 +227,8 @@ class RPMRepManager:
         """
         Build repository.
         """
-        os.chdir(self.__repo)
         if not self.__fake_run:
+            os.chdir(self.__repo)
             os.system('createrepo --update .')
 
     def run(self):
