@@ -239,11 +239,11 @@ class RPMRepManager:
         steps = 6
 
         # 1. Move other_rpms to rpm/version/pkg_arch and make a symlink
-        Report.inline_print('1/{} Moving other rpms…'.format(str(steps)))
+        Report.inline_print('1/{0} Moving other rpms…'.format(str(steps)))
         self.move_other_rpms()
 
         # 2. List all rpms in valid arch -> self.__arch and noarch
-        Report.inline_print('2/{} Listing rpms…'.format(str(steps)))
+        Report.inline_print('2/{0} Listing rpms…'.format(str(steps)))
         arch_l = [self.__rpmdir + self.__arch, self.__rpmdir + 'noarch']
         l_rpms = RPMRepManager.list_rpms(arch_l)
 
@@ -251,21 +251,21 @@ class RPMRepManager:
         u_str = ' '
         if self.__take_unsigned:
             u_str = ' and unsigned '
-        Report.inline_print('3/{} Sorting signed'.format(str(steps)) + u_str + 'rpms…')
+        Report.inline_print('3/{0} Sorting signed'.format(str(steps)) + u_str + 'rpms…')
         signed, unsigned = RPMRepManager.sort_signed(l_rpms)
         l_rpms = signed + unsigned if self.__take_unsigned else signed
 
         # 4. Delete duplicates unsigned packages
         if self.__cleanup:
-            Report.inline_print('4/{} Deleting duplicated packages…'.format(str(steps)))
+            Report.inline_print('4/{0} Deleting duplicated packages…'.format(str(steps)))
             l_rpms = self.delete_duplicates(l_rpms)
 
         # 5. Clean repo before…
-        Report.inline_print('5/{} Cleaning repo…'.format(str(steps)))
+        Report.inline_print('5/{0} Cleaning repo…'.format(str(steps)))
         self.clean_repo()
 
         # 6. …making symlinks.
-        Report.inline_print('6/{} Populating repo…'.format(str(steps)))
+        Report.inline_print('6/{0} Populating repo…'.format(str(steps)))
         self.populate_repo(l_rpms)
 
         # 7. Then make the repo.
