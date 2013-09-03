@@ -1,1 +1,1 @@
-all=['rpm', 'common']
+__all__ = ['rpm', 'common']
