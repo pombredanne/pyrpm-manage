@@ -5,7 +5,7 @@
 import os
 import sys
 import optparse
-from rpmrepmanager import RPMRepManager
+from repomanager.rpm.repo import RPMRepManager
 
 def main():
     parser = RPMRepManager.MakeNeededOptions()
