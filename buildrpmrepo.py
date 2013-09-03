@@ -59,6 +59,9 @@ def main():
 
     print("=> Working on repo " + options.repo + " for " + options.version + " on arch " + options.arch)
     print("=> Options: ")
+
+    if options.cleanup and not options.nocleanup:
+        print("   * Cleanup old packages")
     if options.unsigned:
         print("   * Take unsigned packages")
 
