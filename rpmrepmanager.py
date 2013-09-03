@@ -301,11 +301,9 @@ class RPMRepManager:
                 help='run in real mode')
 
         parser.add_option('--unsigned', action='store_true',
-                default=False,
                 help='build repository with unsigned packages. default to signed only')
 
         parser.add_option('--verbose', action='store_true',
-                default=False,
                 help='if an action is performed, say it immediately')
 
         parser.add_option('--report', action='store_true',
@@ -315,18 +313,16 @@ class RPMRepManager:
         parser.add_option('--cleanup', action='store_true',
                 default=True,
                 help='clean old versions/release of a package. dont touch signed packages unless --force-delete. this is default')
+
         parser.add_option('--no-cleanup', dest='nocleanup',
                 action='store_true')
 
         parser.add_option('--force-delete', action='store_true',
-                default=False,
                 help='force deletion of old packages only, event if signed (but old)')
 
         parser.add_option('--wipe-repo', action='store_true',
-                default=False,
                 help='wipe repository instead of just remake missing/invalid symlinks to RPM')
 
         parser.add_option('--wipe-all-old', action='store_true',
-                default=False,
                 help='default is to keep both latest unsigned and signed package. this option forces to *really* delete *all old* packages. useful only with --force-delete')
         return parser
