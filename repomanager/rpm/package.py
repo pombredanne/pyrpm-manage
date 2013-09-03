@@ -5,7 +5,7 @@
 import os
 import re
 import rpm
-from rpminfo import RPMInfo
+from repomanager.rpm.info import RPMInfo
 from distutils.version import LooseVersion
 
 RE_TRUE_RELEASE = re.compile(r'^([0-9]?[\.]{0,1}[0-9]+)([\._\-a-z0-9]*)$', re.I)

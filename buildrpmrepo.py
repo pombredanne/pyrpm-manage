@@ -29,8 +29,8 @@ Use example for previous tree:
 """
 
 import optparse
-from rpmrepmanager import RPMRepManager
-from colors import Colors as c
+from repomanager.rpm.repo import RPMRepManager
+from repomanager.common.colors import Colors as c
 
 def main():
     parser = RPMRepManager.MakeNeededOptions()

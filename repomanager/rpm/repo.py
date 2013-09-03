@@ -4,10 +4,10 @@
 
 import os
 import optparse
-from report import Report
-from rpmpackage import RPMPackage
-from rpminfo import RPMInfo
-from colors import Colors as c
+from repomanager.common.report import Report
+from repomanager.rpm.package import RPMPackage
+from repomanager.rpm.info import RPMInfo
+from repomanager.common.colors import Colors as c
 
 class RPMRepManager:
     """
