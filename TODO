@@ -1,2 +1,0 @@
-#1 Have the choice to let latest signed package and latest unsigned package and delete older versions.
-#2 Option to force createrepo to rebuild entire repository's metadatas.
