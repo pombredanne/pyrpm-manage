@@ -31,7 +31,7 @@ class RPMRepManager:
         self.__link_relative = '../../../'
         self.__fake_run      = True if options.fake else False
         self.__take_unsigned = True if options.unsigned else False
-        self.__cleanup       = True if options.cleanup else False
+        self.__cleanup       = options.cleanup and not options.nocleanup
         self.__verbose       = True if options.verbose else False
         self.__report        = True if options.report else False
         self.__force_delete  = True if options.force_delete else False
@@ -317,6 +317,8 @@ class RPMRepManager:
         parser.add_option('--cleanup', action='store_true',
                 default=True,
                 help='clean old versions/release of a package. dont touch signed packages unless --force-delete. this is default')
+        parser.add_option('--no-cleanup', dest='nocleanup',
+                action='store_true')
 
         parser.add_option('--force-delete', action='store_true',
                 default=False,
